@@ -28,10 +28,10 @@ add_compile_options(
     -pthread
     -pedantic-errors
     -lm
-    # -Wall
+    -Wall
     -Wextra
     -ggdb
-    # -std=c23
+    -std=c23
 )
 
 # Main executable with mandelbrot sources
