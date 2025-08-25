@@ -1,170 +1,23 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <pthread.h>
-#include <sys/time.h>
-#include <unistd.h>
+#include "merge_sort.h"
 
-typedef struct {
-    int id;
-    int threads;
-    int width, height, max_iter;
-    double xmin, xmax, ymin, ymax;
-    unsigned char* img; // RGB buffer, size = width*height*3
-} Args;
-
-static inline void color_map(int it, int max_iter,
-                             unsigned char* r,
-                             unsigned char* g,
-                             unsigned char* b)
-{
-    if (it >= max_iter) {
-        *r = *g = *b = 0;
-        return;
-    } // black inside
-
-    double t = (double)it / max_iter;
-    double v = 1.0, s = 1.0;
-    double h = 6.0 * t; // 0..6
-    int i = (int)h;
-    double f = h - i;
-    double p = v * (1.0 - s);
-    double q = v * (1.0 - s * f);
-    double u = v * (1.0 - s * (1.0 - f));
-    double R = 0, G = 0, B = 0;
-
-    switch (i % 6) {
-    case 0: R = v; G = u; B = p; break;
-    case 1: R = q; G = v; B = p; break;
-    case 2: R = p; G = v; B = u; break;
-    case 3: R = p; G = q; B = v; break;
-    case 4: R = u; G = p; B = v; break;
-    case 5: R = v; G = p; B = q; break;
+void print_array(int arr[], size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
     }
-
-    *r = (unsigned char)lround(R * 255.0);
-    *g = (unsigned char)lround(G * 255.0);
-    *b = (unsigned char)lround(B * 255.0);
+    printf("\n");
 }
 
-void* worker(void* ptr)
-{
-    Args* a = (Args*)ptr;
+int main() {
+    int arr[] = {12, 11, 13, 5, 6, 7};
+    size_t arr_size = sizeof(arr) / sizeof(arr[0]);
 
-    const double dx = (a->xmax - a->xmin) / (a->width - 1);
-    const double dy = (a->ymax - a->ymin) / (a->height - 1);
+    printf("Given array is \n");
+    print_array(arr, arr_size);
 
-    for (int y = a->id; y < a->height; y += a->threads) {
-        double cy = a->ymin + y * dy;
-        unsigned char* row = a->img + (size_t)y * a->width * 3;
+    merge_sort(arr, arr_size);
 
-        for (int x = 0; x < a->width; ++x) {
-            double cx = a->xmin + x * dx;
-            double zx = 0.0, zy = 0.0;
-            int it = 0;
-
-            while (zx * zx + zy * zy <= 4.0 && it < a->max_iter) {
-                double zx2 = zx * zx - zy * zy + cx;
-                zy = 2.0 * zx * zy + cy;
-                zx = zx2;
-                ++it;
-            }
-
-            unsigned char r, g, b;
-            color_map(it, a->max_iter, &r, &g, &b);
-            row[3 * x + 0] = r;
-            row[3 * x + 1] = g;
-            row[3 * x + 2] = b;
-        }
-    }
-    return NULL;
-}
-
-double now_ms() {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    return tv.tv_sec * 1000.0 + tv.tv_usec / 1000.0;
-}
-
-int main(int argc, char** argv)
-{
-    // Defaults
-    int width = 1200;
-    int height = 800;
-    int max_iter = 1000;
-    double xmin = -2.5, xmax = 1.0;
-    double ymin = -1.25, ymax = 1.25;
-    int threads = (int)sysconf(_SC_NPROCESSORS_ONLN); // hardware concurrency
-    if (threads < 1) threads = 1;
-    const char* out = "mandelbrot.ppm";
-
-    // Parse args
-    if (argc > 1) width    = atoi(argv[1]);
-    if (argc > 2) height   = atoi(argv[2]);
-    if (argc > 3) max_iter = atoi(argv[3]);
-    if (argc > 4) xmin     = atof(argv[4]);
-    if (argc > 5) xmax     = atof(argv[5]);
-    if (argc > 6) ymin     = atof(argv[6]);
-    if (argc > 7) ymax     = atof(argv[7]);
-    if (argc > 8) threads  = atoi(argv[8]) > 0 ? atoi(argv[8]) : threads;
-    if (argc > 9) out      = argv[9];
-
-    size_t bytes = (size_t)width * height * 3;
-    unsigned char* img = (unsigned char*)malloc(bytes);
-    if (!img) {
-        perror("malloc");
-        return 1;
-    }
-    memset(img, 0, bytes);
-
-    pthread_t* tids = (pthread_t*)malloc(sizeof(pthread_t) * threads);
-    Args* targs = (Args*)malloc(sizeof(Args) * threads);
-
-    double t0 = now_ms();
-
-    for (int i = 0; i < threads; ++i) {
-        targs[i].id = i;
-        targs[i].threads = threads;
-        targs[i].width = width;
-        targs[i].height = height;
-        targs[i].max_iter = max_iter;
-        targs[i].xmin = xmin;
-        targs[i].xmax = xmax;
-        targs[i].ymin = ymin;
-        targs[i].ymax = ymax;
-        targs[i].img = img;
-
-        if (pthread_create(&tids[i], NULL, worker, &targs[i]) != 0) {
-            perror("pthread_create");
-            return 1;
-        }
-    }
-    for (int i = 0; i < threads; ++i) {
-        pthread_join(tids[i], NULL);
-    }
-
-    double t1 = now_ms();
-    fprintf(stderr, "Rendered %dx%d in %.3f ms using %d threads.\n",
-            width, height, t1 - t0, threads);
-
-    FILE* f = fopen(out, "wb");
-    if (!f) {
-        perror("fopen");
-        return 1;
-    }
-    fprintf(f, "P6\n%d %d\n255\n", width, height);
-    fwrite(img, 1, bytes, f);
-    fclose(f);
-
-    fprintf(stderr, "Wrote %s\n", out);
-
-    free(img);
-    free(tids);
-    free(targs);
-    printf("Hello world C lang   two complement\n\n");
-    int four_int = 0b0100;
-    printf("four_int = %d", four_int);
-    printf("0x0100(4) = negative %d", ~four_int);
+    printf("\nSorted array is \n");
+    print_array(arr, arr_size);
     return 0;
 }
