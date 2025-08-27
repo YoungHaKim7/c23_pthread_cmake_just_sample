@@ -36,18 +36,36 @@ macos_fmt_flags := ". -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.cc'  -o -ina
 # fmt .clang-format(linuxOS)
 fmt_flags := ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec "+clang_format+" -style=file -i {} \\;"
 
-# (C)clang compile
+# (C)clang compile(macOS)
+[macos]
+r:
+	rm -rf target
+	mkdir -p target
+	{{macos_gcc_which}} {{ldflags_common}} -o {{target}} {{source}}
+	{{target}}
+
+# (C)clang compile(LinuxOS)
+[linux]
 r:
 	rm -rf target
 	mkdir -p target
 	{{gcc_which}} {{ldflags_common}} -o {{target}} {{source}}
 	{{target}}
 
-# (C)clang compile(Optimization)
+# (C)clang compile(Optimization/macOS)
+[macos]
 ro:
 	rm -rf target
 	mkdir -p target
-	clang {{ldflags_optimize}} -o {{target}} {{source}}
+	{{macos_clang_which}} {{ldflags_optimize}} -o {{target}} {{source}}
+	{{target}}
+
+# (C)clang compile(Optimization/LinuxOS)
+[linux]
+ro:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} {{ldflags_optimize}} -o {{target}} {{source}}
 	{{target}}
 
 # cmake compile
