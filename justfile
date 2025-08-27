@@ -1,6 +1,10 @@
 project_name := `basename "$(pwd)"`
 
-# which clang
+# macOS
+macos_clang_which := "/opt/homebrew/opt/llvm/bin/clang"
+macos_gcc_which := "/opt/homebrew/opt/gcc@15/bin/gcc-15"
+
+# linuxOS
 clang_which := "/usr/bin/clang-20"
 gcc_which := "/opt/gcc-15/bin/gcc"
 
@@ -9,7 +13,7 @@ src_dir := "./src"
 target_dir := "./target"
 
 # clang-format 20
-clang_format := "clang-format-20"
+clang_format := "clang-format"
 
 # Files
 source := src_dir+"/main.c"
@@ -25,9 +29,11 @@ ldflags_fsanitize_object := "-g -fsanitize=address"
 ldflags_fsanitize_valgrind := "-fsanitize=address -g3"
 ldflags_optimize :=  "-Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
 
-# fmt
-fmt_flags := ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec "+clang_format+" -style=file -i {} \\;"
+# fmt .clang-format(macOS)
+macos_fmt_flags := ". -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.cc'  -o -iname '*.c'-o -iname '*.cxx' -o -iname '*.c' -o -iname '*.h' | "+clang_format+" -style=file -i --files=/dev/stdin"
 
+# fmt .clang-format(linuxOS)
+fmt_flags := ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec "+clang_format+" -style=file -i {} \\;"
 
 # (C)clang compile
 r:
@@ -44,6 +50,7 @@ ro:
 	{{target}}
 
 # cmake compile
+[linux]
 cr:
 	rm -rf build
 	mkdir -p build
@@ -53,11 +60,32 @@ cr:
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/target/{{project_name}}
 
+# cmake compile
+[macos]
+cr:
+	rm -rf build
+	mkdir -p build
+	export CC={{macos_gcc_which}}
+	cmake -D CMAKE_C_COMPILER={{macos_gcc_which}} -G Ninja .
+	ninja
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
+	./build/target/{{project_name}}
+
+
 # zig C compile
+[linux]
 zr:
 	rm -rf target
 	mkdir -p target
 	export CC={{gcc_which}}
+	zig cc {{ldflags_common}} -o {{target}} {{source}}
+	{{target}}
+
+[macos]
+zr:
+	rm -rf target
+	mkdir -p target
+	export CC={{macos_gcc_which}}
 	zig cc {{ldflags_common}} -o {{target}} {{source}}
 	{{target}}
 
@@ -73,8 +101,14 @@ cl:
 	{{clang_format}} -style=WebKit -dump-config > .clang-format
 
 # .clang-format fmt
+[linux]
 fmt:
 	find {{fmt_flags}}
+
+# .clang-format fmt(macos)
+[macos]
+fmt:
+	find {{macos_fmt_flags}}
 
 # clang LLVM emit-file
 ll:
