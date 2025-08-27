@@ -68,7 +68,7 @@ ro:
 	{{clang_which}} {{ldflags_optimize}} -o {{target}} {{source}}
 	{{target}}
 
-# cmake compile
+# cmake compile(LinuxOS)
 [linux]
 cr:
 	rm -rf build
@@ -79,7 +79,7 @@ cr:
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/target/{{project_name}}
 
-# cmake compile
+# cmake compile(macOS)
 [macos]
 cr:
 	rm -rf build
@@ -91,7 +91,7 @@ cr:
 	./build/target/{{project_name}}
 
 
-# zig C compile
+# zig C compile(LinuxOS)
 [linux]
 zr:
 	rm -rf target
@@ -100,6 +100,7 @@ zr:
 	zig cc {{ldflags_common}} -o {{target}} {{source}}
 	{{target}}
 
+# zig C compile(macOS)
 [macos]
 zr:
 	rm -rf target
