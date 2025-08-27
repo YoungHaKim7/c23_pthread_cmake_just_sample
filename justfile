@@ -121,7 +121,7 @@ cl:
 	rm -rf .clang-format
 	{{clang_format}} -style=WebKit -dump-config > .clang-format
 
-# .clang-format init(LinuxOS)
+# .clang-format init(macOS)
 [macos]
 cl:
 	rm -rf .clang-format
