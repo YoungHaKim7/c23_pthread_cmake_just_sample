@@ -115,10 +115,17 @@ b:
 	mkdir -p target
 	clang {{ldflags_debug}} -o {{target}} {{source}}
 
-# .clang-format init
+# .clang-format init(LinuxOS)
+[linux]
 cl:
 	rm -rf .clang-format
 	{{clang_format}} -style=WebKit -dump-config > .clang-format
+
+# .clang-format init(LinuxOS)
+[macos]
+cl:
+	rm -rf .clang-format
+	{{macos_clang_format}} -style=WebKit -dump-config > .clang-format
 
 # .clang-format fmt
 [linux]
