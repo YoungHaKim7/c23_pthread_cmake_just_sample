@@ -13,7 +13,7 @@ src_dir := "./src"
 target_dir := "./target"
 
 # clang-format 20
-clang_format := "clang-format"
+clang_format := "clang-format-20"
 
 # Files
 source := src_dir+"/main.c"
