@@ -13,6 +13,7 @@ src_dir := "./src"
 target_dir := "./target"
 
 # clang-format 20
+macos_clang_format := "/opt/homebrew/opt/llvm/bin/clang-format"
 clang_format := "clang-format-20"
 
 # Files
@@ -30,7 +31,7 @@ ldflags_fsanitize_valgrind := "-fsanitize=address -g3"
 ldflags_optimize :=  "-Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
 
 # fmt .clang-format(macOS)
-macos_fmt_flags := ". -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.cc'  -o -iname '*.c'-o -iname '*.cxx' -o -iname '*.c' -o -iname '*.h' | "+clang_format+" -style=file -i --files=/dev/stdin"
+macos_fmt_flags := ". -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.cc'  -o -iname '*.c'-o -iname '*.cxx' -o -iname '*.c' -o -iname '*.h' | "+macos_clang_format+" -style=file -i --files=/dev/stdin"
 
 # fmt .clang-format(linuxOS)
 fmt_flags := ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec "+clang_format+" -style=file -i {} \\;"
