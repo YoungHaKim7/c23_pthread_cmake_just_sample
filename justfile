@@ -141,7 +141,7 @@ fmt:
 ll:
 	rm -rf target
 	mkdir -p target
-	cp -rf {{src_dir}}/main.c ./
+	cp -rf {{src_dir}}/*.* ./.
 	{{clang_which}} {{ldflags_emit_llvm}} main.c
 	mv *.ll {{target_dir}}
 	clang {{ldflags_common}} -o {{target}} {{source}}
