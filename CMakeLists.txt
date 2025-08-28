@@ -5,11 +5,11 @@ string(REPLACE " " "_" ProjectId ${ProjectId})
 project(${ProjectId} LANGUAGES C)
 
 # Force GCC 15
-set(CMAKE_CC_COMPILER "/opt/gcc-15/bin/gcc")
+set(CMAKE_C_COMPILER "/opt/gcc-15/bin/gcc")
 
-set(CMAKE_CXX_STANDARD 26)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
 SET (CMAKE_C_FLAGS_INIT                "-Wall -std=c23")
 SET (CMAKE_C_FLAGS_DEBUG_INIT          "-g")
 SET (CMAKE_C_FLAGS_MINSIZEREL_INIT     "-Os -DNDEBUG")
@@ -31,7 +31,7 @@ add_compile_options(
     -Wall
     -Wextra
     -ggdb
-    -std=c23
+    # -std=c23
 )
 
 # Main executable with mandelbrot sources
