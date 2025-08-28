@@ -1,6 +1,9 @@
 build
 target
 
+.cache
+
+
 # Prerequisites
 *.d
 
