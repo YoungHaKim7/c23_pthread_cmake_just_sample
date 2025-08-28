@@ -1,6 +1,8 @@
 # c23_pthread_cmake_just_sample
 
 - [cmake Documentation](https://cmake.org/cmake/help/latest/index.html)
+- [GCC Documentation](https://gcc.gnu.org/onlinedocs/)
+- [Clang Documentation](https://clang.llvm.org/docs/index.html)
 - [justfile Documentation](https://just.systems/man/en/)
 
 ```bash
