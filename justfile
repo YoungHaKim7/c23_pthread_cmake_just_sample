@@ -44,7 +44,7 @@ r:
 	{{gcc_which}} {{ldflags_common}} -o {{target}} {{source}}
 	{{target}}
 
-# (C)clang compile(macOS)
+# (C)gcc compile(macOS)
 [macos]
 r:
 	rm -rf target
@@ -52,7 +52,7 @@ r:
 	{{macos_gcc_which}} {{ldflags_common}} -o {{target}} {{source}}
 	{{target}}
 
-# (C)clang compile(Optimization/LinuxOS)
+# (C)gcc compile(Optimization/LinuxOS)
 [linux]
 ro:
 	rm -rf target
