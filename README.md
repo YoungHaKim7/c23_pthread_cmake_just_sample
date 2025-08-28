@@ -30,3 +30,6 @@ just 1.42.4
 $ clang-format-20 --version
 Ubuntu clang-format version 20.1.8 (++20250804090239+87f0227cb601-1~exp1~20250804210352.139)
 ```
+
+# cmake build 잘 설명
+- https://youtu.be/t6iV5_plo20?si=hbBFRwxSQKOVlWET
