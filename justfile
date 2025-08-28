@@ -36,7 +36,7 @@ fmt_flags := ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec "+clang_f
 # fmt .clang-format(macOS)
 macos_fmt_flags := ". -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.cc'  -o -iname '*.c'-o -iname '*.cxx' -o -iname '*.c' -o -iname '*.h' | "+macos_clang_format+" -style=file -i --files=/dev/stdin"
 
-# (C)clang compile(LinuxOS)
+# (C)gcc compile(LinuxOS)
 [linux]
 r:
 	rm -rf target
@@ -52,7 +52,7 @@ r:
 	{{macos_gcc_which}} {{ldflags_common}} -o {{target}} {{source}}
 	{{target}}
 
-# (C)gcc compile(Optimization/LinuxOS)
+# (C)clang compile(Optimization/LinuxOS)
 [linux]
 ro:
 	rm -rf target
