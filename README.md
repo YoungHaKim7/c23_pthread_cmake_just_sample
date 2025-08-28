@@ -1,5 +1,8 @@
 # c23_pthread_cmake_just_sample
 
+- [cmake Documentation](https://cmake.org/cmake/help/latest/index.html)
+- [justfile Documentation](https://just.systems/man/en/)
+
 ```bash
 $ /opt/gcc-15/bin/gcc --version
 gcc (GCC) 15.1.0
