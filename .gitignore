@@ -1,8 +1,9 @@
+# target build file
 build
 target
 
+# clangd
 .cache
-
 
 # Prerequisites
 *.d

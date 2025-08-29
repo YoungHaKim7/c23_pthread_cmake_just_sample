@@ -115,6 +115,10 @@ b:
 	mkdir -p target
 	{{clang_which}} {{ldflags_debug}} -o {{target}} {{source}}
 
+# move target
+move:
+	mv *.bc *.i *.s *.o *.ll a.out build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log target
+
 # .clang-format init(LinuxOS)
 [linux]
 cl:
