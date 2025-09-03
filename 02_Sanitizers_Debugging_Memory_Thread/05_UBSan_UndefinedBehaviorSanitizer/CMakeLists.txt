@@ -5,10 +5,10 @@ string(REPLACE " " "_" ProjectId ${ProjectId})
 project(${ProjectId} LANGUAGES C)
 
 # Force GCC 15
-# set(CMAKE_C_COMPILER "/opt/gcc-15/bin/gcc")
+set(CMAKE_C_COMPILER "/opt/gcc-15/bin/gcc")
 
 # Force Clang 20(macOS)
-set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
+# set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
 
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -34,19 +34,21 @@ add_compile_options(
     -Wall
     -Wextra
     -ggdb
+    -g
+    -fsanitize=undefined
     # -std=c23
 )
 
 # Main executable with mandelbrot sources
 add_executable(${ProjectId}
     src/main.c
-    src/merge_sort.c
     # src/mandelbrot.c
 )
 
-target_link_options(${ProjectId} PRIVATE -pthread -lm)
+target_link_options(${ProjectId} PRIVATE -pthread -lm -fsanitize=undefined)
 
 # Output directory
 set_target_properties(${ProjectId} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/target
 )
+
