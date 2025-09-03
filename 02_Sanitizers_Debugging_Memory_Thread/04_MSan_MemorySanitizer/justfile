@@ -74,8 +74,8 @@ ro:
 cr:
 	rm -rf build
 	mkdir -p build
-	export CC={{gcc_which}}
-	cmake -D CMAKE_C_COMPILER={{gcc_which}} -G Ninja .
+	export CC={{clang_which}}
+	cmake -D CMAKE_C_COMPILER={{clang_which}} -G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/target/{{project_name}}

@@ -5,7 +5,9 @@ string(REPLACE " " "_" ProjectId ${ProjectId})
 project(${ProjectId} LANGUAGES C)
 
 # Force GCC 15
-set(CMAKE_C_COMPILER "/opt/gcc-15/bin/gcc")
+# set(CMAKE_C_COMPILER "/opt/gcc-15/bin/gcc")
+# Force Clang20(LinuxOS)
+set(CMAKE_C_COMPILER "/usr/bin/clang-20")
 
 # Force Clang 20(macOS)
 # set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
@@ -35,7 +37,8 @@ add_compile_options(
     -Wextra
     -ggdb
     -g
-    -fsanitize=address
+    -fsanitize=memory
+    -fno-omit-frame-pointer
     # -std=c23
 )
 
@@ -45,7 +48,7 @@ add_executable(${ProjectId}
     # src/mandelbrot.c
 )
 
-target_link_options(${ProjectId} PRIVATE -pthread -lm -fsanitize=address)
+target_link_options(${ProjectId} PRIVATE -pthread -lm -fsanitize=memory)
 
 # Output directory
 set_target_properties(${ProjectId} PROPERTIES
