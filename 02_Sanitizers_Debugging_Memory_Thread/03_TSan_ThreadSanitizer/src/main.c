@@ -1,23 +1,29 @@
+#include <pthread.h>
 #include <stdio.h>
-#include "merge_sort.h"
 
-void print_array(int arr[], size_t size) {
-    for (size_t i = 0; i < size; i++) {
-        printf("%d ", arr[i]);
+static int counter = 0; // ❌ shared without synchronization
+
+void* worker(void* arg)
+{
+    int id = *(int*)arg; // use the parameter
+    for (int i = 0; i < 1000000; i++) {
+        counter++; // data race
     }
-    printf("\n");
+    printf("Thread %d done \n", id);
+    return NULL;
 }
 
-int main() {
-    int arr[] = {12, 11, 13, 5, 6, 7};
-    size_t arr_size = sizeof(arr) / sizeof(arr[0]);
+int main()
+{
+    pthread_t t1, t2;
+    int id1 = 1, id2 = 2;
 
-    printf("Given array is \n");
-    print_array(arr, arr_size);
+    pthread_create(&t1, NULL, worker, &id1);
+    pthread_create(&t2, NULL, worker, &id2);
 
-    merge_sort(arr, arr_size);
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
 
-    printf("\nSorted array is \n");
-    print_array(arr, arr_size);
+    printf("Counter = %d\n", counter);
     return 0;
 }
