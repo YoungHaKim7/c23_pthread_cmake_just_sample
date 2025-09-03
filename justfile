@@ -173,11 +173,20 @@ fsan:
 	mv *.out {{target_dir}}
 
 # leak memory check(valgrind)
-mem:
+[linux]
+leaks:
 	rm -rf target
 	mkdir -p target
 	{{clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
 	valgrind --leak-check=full {{target}}
+
+# leak memory check(valgrind)
+[macos]
+leaks:
+	rm -rf target
+	mkdir -p target
+	{{macos_clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
+	leaks --atExit -- {{target}}
 
 # object file emit-file
 obj:
