@@ -1,3 +1,0 @@
-[submodule "02_Sanitizers_Debugging_Memory_Thread/externals/sanitizers-cmake"]
-	path = 02_Sanitizers_Debugging_Memory_Thread/externals/sanitizers-cmake
-	url = git@github.com:arsenm/sanitizers-cmake.git
