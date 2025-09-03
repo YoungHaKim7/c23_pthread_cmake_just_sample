@@ -28,6 +28,7 @@ ldflags_assembly := "-Wall -save-temps"
 ldflags_fsanitize_address := "-O1 -g -fsanitize=address -fno-omit-frame-pointer -c"
 ldflags_fsanitize_object := "-g -fsanitize=address"
 ldflags_fsanitize_valgrind := "-fsanitize=address -g3"
+ldflags_fsanitize_thread := "-fsanitize=thread -g3"
 ldflags_optimize :=  "-Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
 
 # fmt .clang-format(linuxOS)
@@ -187,6 +188,15 @@ leaks:
 	mkdir -p target
 	{{macos_clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
 	leaks --atExit -- {{target}}
+ 
+# thread check(data race)
+[macos]
+thread:
+	rm -rf target
+	mkdir -p target
+	{{macos_clang_which}} {{ldflags_fsanitize_thread}} {{source}} -o {{target}}
+	{{target}}
+
 
 # object file emit-file
 obj:
