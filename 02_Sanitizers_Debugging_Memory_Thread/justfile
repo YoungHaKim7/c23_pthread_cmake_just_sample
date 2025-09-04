@@ -167,7 +167,16 @@ as:
 	mv *.s {{target_dir}}
 	mv *.bc {{target_dir}}
 
-# clang fsanitize_address
+# clang sanitize(ASan=address / LSan=leak / TSan=thread / MSan=memory / UBSan=undefined)
+san SAN:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} -g -fsanitize={{SAN}} -fno-omit-frame-pointer -c {{source}}
+	{{clang_which}} -g -fsanitize={{SAN}} *.o 
+	mv a.out *.o {{target_dir}}
+	{{target_dir}}/a.out
+
+# clang (ASan)fsanitize_address
 asan:
 	rm -rf target
 	mkdir -p target
@@ -176,13 +185,14 @@ asan:
 	mv a.out *.o {{target_dir}}
 	{{target_dir}}/a.out
 
-# clang LSan_LeakSanitizer
+# clang LSan_Leak_Sanitizer
 lsan:
 	rm -rf target
 	mkdir -p target
 	{{clang_which}} {{ldflags_fsanitize_leak}} {{source}} -o {{target}}
 	{{target}}
 
+# clang TSan_Thread_Sanitizer
 tsan:
 	rm -rf target
 	mkdir -p target
