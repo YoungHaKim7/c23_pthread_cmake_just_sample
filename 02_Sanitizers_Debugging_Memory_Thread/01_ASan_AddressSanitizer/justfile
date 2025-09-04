@@ -166,7 +166,7 @@ as:
 	mv *.bc {{target_dir}}
 
 # clang fsanitize_address
-fsan:
+asan:
 	rm -rf target
 	mkdir -p target
 	{{clang_which}} {{ldflags_fsanitize_address}} {{source}} -o {{target}}
