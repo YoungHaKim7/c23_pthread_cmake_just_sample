@@ -29,6 +29,7 @@ ldflags_fsanitize_address := "-O1 -g -fsanitize=address -fno-omit-frame-pointer 
 ldflags_fsanitize_object := "-g -fsanitize=address"
 ldflags_fsanitize_valgrind := "-fsanitize=address -g3"
 ldflags_fsanitize_thread := "-fsanitize=thread -g3"
+ldflags_fsanitize_leak := "-fsanitize=leak -g"
 ldflags_optimize :=  "-Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
 
 # fmt .clang-format(linuxOS)
@@ -166,12 +167,19 @@ as:
 	mv *.bc {{target_dir}}
 
 # clang fsanitize_address
-fsan:
+asan:
 	rm -rf target
 	mkdir -p target
 	{{clang_which}} {{ldflags_fsanitize_address}} {{source}} -o {{target}}
 	{{clang_which}} {{ldflags_fsanitize_object}} {{target}}
 	mv *.out {{target_dir}}
+
+# clang LSan_LeakSanitizer
+lsan:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} {{ldflags_fsanitize_leak}} {{source}} -o {{target}}
+	{{target}}
 
 # leak memory check(valgrind)
 [linux]

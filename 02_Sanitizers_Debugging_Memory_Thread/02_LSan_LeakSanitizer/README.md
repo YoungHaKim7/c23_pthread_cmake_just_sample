@@ -36,3 +36,28 @@ SUMMARY: LeakSanitizer: 128 byte(s) leaked in 1 allocation(s).
 error: Recipe `cr` failed on line 81 with exit code 23
 
 ```
+
+
+- lsan
+
+```bash
+$ just lsan
+
+rm -rf target
+mkdir -p target
+/usr/bin/clang-20 -fsanitize=leak -g ./src/main.c -o ./target/main
+./target/main
+
+=================================================================
+==7016==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 128 byte(s) in 1 object(s) allocated from:
+    #0 0x60bd2ae629e3 in malloc (/home/g/my_project/Rust_Lang/9999/2222/c23_pthread_cmake_just_sample/02_Sanitizers_Debugging_Memory_Thread/02_LSan_LeakSanitizer/target/main+0x369e3) (BuildId: b693fe8e50c830d88d3d5d15d1593800e9fda5d3)
+    #1 0x60bd2ae65ed8 in main /home/g/my_project/Rust_Lang/9999/2222/c23_pthread_cmake_just_sample/02_Sanitizers_Debugging_Memory_Thread/02_LSan_LeakSanitizer/./src/main.c:6:18
+    #2 0x7328d362a1c9 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+    #3 0x7328d362a28a in __libc_start_main csu/../csu/libc-start.c:360:3
+    #4 0x60bd2ae313e4 in _start (/home/g/my_project/Rust_Lang/9999/2222/c23_pthread_cmake_just_sample/02_Sanitizers_Debugging_Memory_Thread/02_LSan_LeakSanitizer/target/main+0x53e4) (BuildId: b693fe8e50c830d88d3d5d15d1593800e9fda5d3)
+
+SUMMARY: LeakSanitizer: 128 byte(s) leaked in 1 allocation(s).
+error: Recipe `lsan` failed on line 182 with exit code 23
+```
