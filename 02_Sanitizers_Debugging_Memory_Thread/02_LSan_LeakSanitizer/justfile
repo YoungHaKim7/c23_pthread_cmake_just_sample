@@ -25,7 +25,7 @@ ldflags_common := "-std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -Wextr
 ldflags_debug := "-c -pthread -lm -Wall -Wextra -ggdb"
 ldflags_emit_llvm := "-S -emit-llvm"
 ldflags_assembly := "-Wall -save-temps"
-ldflags_fsanitize_address := "-O1 -g -fsanitize=address -fno-omit-frame-pointer -c"
+ldflags_fsanitize_address := "-g -fsanitize=address -fno-omit-frame-pointer -c"
 ldflags_fsanitize_object := "-g -fsanitize=address"
 ldflags_fsanitize_valgrind := "-fsanitize=address -g3"
 ldflags_fsanitize_thread := "-fsanitize=thread -g3"
@@ -170,9 +170,10 @@ as:
 asan:
 	rm -rf target
 	mkdir -p target
-	{{clang_which}} {{ldflags_fsanitize_address}} {{source}} -o {{target}}
-	{{clang_which}} {{ldflags_fsanitize_object}} {{target}}
-	mv *.out {{target_dir}}
+	{{clang_which}} {{ldflags_fsanitize_address}} {{source}}
+	{{clang_which}} {{ldflags_fsanitize_object}} *.o 
+	mv a.out *.o {{target_dir}}
+	{{target_dir}}/a.out
 
 # clang LSan_LeakSanitizer
 lsan:
