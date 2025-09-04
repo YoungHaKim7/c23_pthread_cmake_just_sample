@@ -5,14 +5,15 @@
 // Merges two subarrays of arr[].
 // First subarray is arr[l..m]
 // Second subarray is arr[m+1..r]
-void merge(int arr[], int l, int m, int r) {
+void merge(int arr[], int l, int m, int r)
+{
     int i, j, k;
     int n1 = m - l + 1;
     int n2 = r - m;
 
     // Create temp arrays
-    int *L = (int *)malloc(n1 * sizeof(int));
-    int *R = (int *)malloc(n2 * sizeof(int));
+    int* L = (int*)malloc(n1 * sizeof(int));
+    int* R = (int*)malloc(n2 * sizeof(int));
 
     // Copy data to temp arrays L[] and R[]
     for (i = 0; i < n1; i++)
@@ -54,7 +55,8 @@ void merge(int arr[], int l, int m, int r) {
 
 // l is for left index and r is right index of the
 // sub-array of arr to be sorted
-void merge_sort_recursive(int arr[], int l, int r) {
+void merge_sort_recursive(int arr[], int l, int r)
+{
     if (l < r) {
         // Same as (l+r)/2, but avoids overflow for large l and h
         int m = l + (r - l) / 2;
@@ -67,6 +69,7 @@ void merge_sort_recursive(int arr[], int l, int r) {
     }
 }
 
-void merge_sort(int arr[], size_t size) {
+void merge_sort(int arr[], size_t size)
+{
     merge_sort_recursive(arr, 0, size - 1);
 }
