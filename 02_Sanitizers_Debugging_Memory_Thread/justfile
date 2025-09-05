@@ -236,14 +236,14 @@ valgrind_detail:
 	mv {{project_name}} {{target_dir}}
 	valgrind --leak-check=full --track-origins=yes {{target_dir }}/{{project_name}}
 
-# valgrind --track-origins=yes --show-leak-kinds=all
+# valgrind --tool=memcheck --vgdb=yes --vgdb-error=0
 [linux]
-valgrind_memcheck_detail:
+valgrind_memcheck:
 	rm -rf target
 	mkdir -p target
-	{{clang_which}} {{ldflags_fsanitize_valgrind_O0}} {{source}} -o {{project_name}}
+	{{clang_which}} -O0 -g {{source}} -o {{project_name}}
 	mv {{project_name}} {{target_dir}}
-	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all {{target_dir }}/{{project_name}}
+	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all --tool=memcheck --vgdb=yes --vgdb-error=0 {{target_dir }}/{{project_name}}
  
 # thread check(data race)
 [macos]
