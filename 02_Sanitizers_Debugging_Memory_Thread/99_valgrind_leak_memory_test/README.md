@@ -1,3 +1,8 @@
+# (Valgrind구체적 오류)4.5. Details of Memcheck's checking machinery
+- https://valgrind.org/docs/manual/mc-manual.html#mc-manual.machine
+
+<hr />
+
 # Result
 - https://valgrind.org/docs/manual/quick-start.html
 
