@@ -235,6 +235,15 @@ valgrind_detail:
 	{{clang_which}} {{ldflags_fsanitize_valgrind_O0}} {{source}} -o {{project_name}}
 	mv {{project_name}} {{target_dir}}
 	valgrind --leak-check=full --track-origins=yes {{target_dir }}/{{project_name}}
+
+# valgrind --track-origins=yes --show-leak-kinds=all
+[linux]
+valgrind_memcheck_detail:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} {{ldflags_fsanitize_valgrind_O0}} {{source}} -o {{project_name}}
+	mv {{project_name}} {{target_dir}}
+	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all {{target_dir }}/{{project_name}}
  
 # thread check(data race)
 [macos]
