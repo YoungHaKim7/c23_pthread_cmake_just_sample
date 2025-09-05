@@ -265,23 +265,23 @@ obj:
 	mv *.bc {{target_dir}}
 	objdump --disassemble -S -C {{target_dir}}/main.o
 
-# hex view
+# hex view("rg -i <search>" | "grep -rni <search>")
 [linux]
 xx:
 	rm -rf target
 	mkdir -p target
-	{{clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
-	xxd -c 16 {{target}} > hex_print.txt
-	mv {{target}} {{target}}.* hex_print.txt {{target_dir}}
+	{{clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{project_name}}
+	xxd -c 16 {{project_name}} > hex_print.txt
+	mv {{project_name}} hex_print.txt {{target_dir}}
 
 # hex view
 [macos]
 xx:
 	rm -rf target
 	mkdir -p target
-	{{macos_clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
-	xxd -c 16 {{target}} > hex_print.txt
-	mv {{target}} {{target}}.* hex_print.txt {{target_dir}}
+	{{macos_clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{project_name}}
+	xxd -c 16 {{project_name}} > hex_print.txt
+	mv {{project_name}} {{project_name}}.* hex_print.txt {{target_dir}}
 
 
 # clean files
