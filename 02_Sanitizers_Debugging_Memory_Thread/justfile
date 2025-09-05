@@ -266,11 +266,23 @@ obj:
 	objdump --disassemble -S -C {{target_dir}}/main.o
 
 # hex view
+[linux]
 xx:
 	rm -rf target
 	mkdir -p target
 	{{clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
-	xxd -c 16 {{target}}
+	xxd -c 16 {{target}} > hex_print.txt
+	mv {{target}} {{target}}.* hex_print.txt {{target_dir}}
+
+# hex view
+[macos]
+xx:
+	rm -rf target
+	mkdir -p target
+	{{macos_clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
+	xxd -c 16 {{target}} > hex_print.txt
+	mv {{target}} {{target}}.* hex_print.txt {{target_dir}}
+
 
 # clean files
 clean:
