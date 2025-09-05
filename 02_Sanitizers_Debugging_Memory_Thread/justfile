@@ -225,6 +225,7 @@ valgrind:
 	mkdir -p target
 	{{clang_which}} {{ldflags_fsanitize_valgrind_O0}} {{source}} -o {{target}}
 	valgrind --leak-check=full {{target}}
+	mv {{target}} {{target_dir}}
  
 # thread check(data race)
 [macos]
