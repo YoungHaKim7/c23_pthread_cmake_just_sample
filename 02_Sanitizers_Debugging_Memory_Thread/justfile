@@ -30,6 +30,7 @@ ldflags_fsanitize_object := "-g -fsanitize=address"
 ldflags_fsanitize_thread := "-g -fsanitize=thread -fno-omit-frame-pointer -c"
 ldflags_fsanitize_thread_object := "-g -fsanitize=thread"
 ldflags_fsanitize_valgrind := "-fsanitize=address -g3"
+ldflags_fsanitize_valgrind_O0 := "-O0 -g -std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror"
 ldflags_fsanitize_leak := "-fsanitize=leak -g"
 ldflags_optimize :=  "-Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
 
@@ -216,6 +217,14 @@ leaks:
 	mkdir -p target
 	{{macos_clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
 	leaks --atExit -- {{target}}
+
+# leak memory check(valgrind)
+[linux]
+valgrind:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} {{ldflags_fsanitize_valgrind_O0}} {{source}} -o {{target}}
+	valgrind --leak-check=full {{target}}
  
 # thread check(data race)
 [macos]
