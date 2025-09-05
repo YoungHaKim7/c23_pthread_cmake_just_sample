@@ -1,6 +1,9 @@
 # (Valgrind구체적 오류)4.5. Details of Memcheck's checking machinery
 - https://valgrind.org/docs/manual/mc-manual.html#mc-manual.machine
 
+# Using and understanding the Valgrind core: Advanced Topics
+- https://valgrind.org/docs/manual/manual-core-adv.html
+
 <hr />
 
 # How do I use valgrind to find memory leaks?
