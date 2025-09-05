@@ -122,7 +122,7 @@ b:
 move:
 	rm -rf target
 	mkdir target
-	mv *.bc *.i *.s *.o *.ll a.out build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log target
+	mv CMakeCache.txt CMakeFiles cmake_install.cmake .ninja_deps .ninja_log build.ninja *.bc *.i *.s *.o *.ll a.out target
 
 # .clang-format init(LinuxOS)
 [linux]
