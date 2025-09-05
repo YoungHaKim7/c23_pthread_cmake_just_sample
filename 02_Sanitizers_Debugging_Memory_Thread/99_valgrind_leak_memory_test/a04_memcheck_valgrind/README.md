@@ -3,8 +3,55 @@
 
 <hr />
 
+#  gbd
+
+- This starts Valgrind with gdbserver enabled.
+  - Then in another terminal:
+
+```bash
+gdb ./memcheck_demo
+(gdb) target remote | vgdb
+```
+
+- Now you can issue Memcheck monitor commands via GDB:
+  - Inspect uninitialized memory (xb / get_vbits):
+
+```gdb
+(gdb) mc xb &arr 16
+(gdb) mc get_vbits &arr 16
+```
+
+- Force memory state changes:
+
+```gdb
+(gdb) mc make_memory noaccess &arr 4
+(gdb) mc check_memory addressable &arr 4
+```
+
+- Leak check and block list:
+
+```gdb
+(gdb) mc leak_check full reachable any
+(gdb) mc block_list 1
+```
+
+- Show who points at a block:
+
+```gdb
+(gdb) mc who_points_at &root 32
+```
+
+- This program gives you all the ingredients for testing:
+  - V-bits (uninit usage).
+  - A-bits (overflow, use-after-free).
+  - Leaks (tree root + buf).
+  - Dangling pointers for who_points_at.
+
+<hr />
+
 # Result
 - https://valgrind.org/docs/manual/quick-start.html
+
 
 ```bash
 $ just valgrind_memcheck_detail
