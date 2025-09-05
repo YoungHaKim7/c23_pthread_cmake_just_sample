@@ -1,16 +1,17 @@
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include <string.h>
 
-int main(void) {
+int main(void)
+{
     size_t pagesize = getpagesize();
 
     // ✅ Allocate one page with mmap
-    char *p = mmap(NULL, pagesize, PROT_READ | PROT_WRITE,
-                   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    char* p = mmap(NULL, pagesize, PROT_READ | PROT_WRITE,
+        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (p == MAP_FAILED) {
         perror("mmap");
         return 1;
