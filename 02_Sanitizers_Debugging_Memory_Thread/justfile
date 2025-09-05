@@ -18,7 +18,7 @@ macos_clang_format := "/opt/homebrew/opt/llvm/bin/clang-format"
 
 # Files
 source := src_dir+"/main.c"
-target := target_dir+"/main"
+target := target_dir+project_name
 
 # Common flags
 ldflags_common := "-std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror"
