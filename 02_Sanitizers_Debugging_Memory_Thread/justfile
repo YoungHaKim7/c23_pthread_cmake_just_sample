@@ -48,24 +48,24 @@ fm_flags := "-e c -e h -e cpp -e hpp -e cc -e cxx -x "+clang_format+" -style=fil
 r:
 	rm -rf target
 	mkdir -p target
-	{{gcc_which}} {{ldflags_common}} -o {{target}} {{source}}
-	{{target}}
+	{{gcc_which}} {{ldflags_common}} -o {{target_dir}}/{{project_name}} {{source}}
+	{{target_dir}}/{{project_name}}
 
 # (C)gcc compile(macOS)
 [macos]
 r:
 	rm -rf target
 	mkdir -p target
-	{{macos_gcc_which}} {{ldflags_common}} -o {{target}} {{source}}
-	{{target}}
+	{{macos_gcc_which}} {{ldflags_common}} -o {{target_dir}}/{{project_name}} {{source}}
+	{{target_dir}}/{{project_name}}
 
 # (C)clang compile(Optimization/LinuxOS)
 [linux]
 ro:
 	rm -rf target
 	mkdir -p target
-	{{clang_which}} {{ldflags_optimize}} -o {{target}} {{source}}
-	{{target}}
+	{{clang_which}} {{ldflags_optimize}} -o {{project_name}} {{source}}
+	{{target_dir}}/{{project_name}}
 
 # (C)clang compile(Optimization/macOS)
 [macos]
