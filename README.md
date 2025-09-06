@@ -1,3 +1,11 @@
+# link
+
+
+<hr />
+
+# C23 wiki에 잘 정리됨.
+- https://en.wikipedia.org/wiki/C23_(C_standard_revision)
+
 # C11~ C23까지 잘 정리됨.
 - https://github.com/AnthonyCalandra/modern-c-features
 
