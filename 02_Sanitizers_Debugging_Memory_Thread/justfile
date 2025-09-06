@@ -64,7 +64,7 @@ r:
 ro:
 	rm -rf target
 	mkdir -p target
-	{{clang_which}} {{ldflags_optimize}} -o {{project_name}} {{source}}
+	{{clang_which}} {{ldflags_optimize}} -o {{target_dir}}/{{project_name}} {{source}}
 	{{target_dir}}/{{project_name}}
 
 # (C)clang compile(Optimization/macOS)
@@ -72,8 +72,8 @@ ro:
 ro:
 	rm -rf target
 	mkdir -p target
-	{{macos_clang_which}} {{ldflags_optimize}} -o {{target}} {{source}}
-	{{target}}
+	{{macos_clang_which}} {{ldflags_optimize}} -o {{target_dir}}/{{project_name}} {{source}}
+	{{target_dir}}/{{project_name}}
 
 # cmake compile(LinuxOS)
 [linux]
