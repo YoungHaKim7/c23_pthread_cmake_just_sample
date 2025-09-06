@@ -1,3 +1,35 @@
+# That log line is the runtime error report from AddressSanitizer (ASan).
+- AddressSanitizer is a compiler/runtime instrumentation that detects memory safety bugs (buffer overflows, use-after-free, invalid frees, double frees, stack/global corruption, etc.).
+  - 해당 로그 라인은 AddressSanitizer(ASAN)의 런타임 오류 보고서입니다.
+AddressSanitizer는 메모리 안전 버그(버퍼 오버플로, 사용 후 프리, 무효 프리, 더블 프리, 스택/글로벌 손상 등)를 감지하는 컴파일러/런타임 계측기입니다.
+
+- ==18086== → process ID (here, 18086).
+
+- ERROR: AddressSanitizer → tool raising the error (ASan).
+
+- heap-buffer-overflow → type of bug detected.
+That means your program wrote beyond the allocated heap buffer.
+
+- on address 0x502000000018 → the offending memory address.
+
+- at pc 0x0000004011b8 → program counter where the fault happened (useful for backtrace).
+
+- bp 0x7fff9dc20410 sp 0x7fff9dc20400 → base pointer and stack pointer at the time.
+
+- WRITE of size 1 → the invalid memory write was 1 byte.
+
+- thread T0 → happened in the main thread.
+
+- ==18086== → 프로세스 ID (여기, 18086).
+  - 오류: AddressSanitizer → 오류를 발생시키는 도구(ASAN).
+  - 힙-buffer-overflow → 유형의 버그가 감지되었습니다.
+  - 즉, 프로그램이 할당된 힙 버퍼를 초과하여 작성되었음을 의미합니다.
+  - 주소 0x5020000018 → 문제가 되는 메모리 주소.
+  - PC 0x0000004011b8 → 프로그램 카운터에서 오류가 발생했습니다(백트레이스용 useful).
+  - bp 0x7ff9dc20410 sp 0x7ff9dc20400 → 당시 기본 포인터와 스택 포인터.
+  - 크기 1 → 잘못된 메모리 쓰기가 1바이트였습니다.
+  - T0 → 스레드가 메인 스레드에서 발생했습니다.
+
 # Result
 
 ```bash
