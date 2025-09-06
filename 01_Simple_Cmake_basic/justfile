@@ -18,17 +18,20 @@ macos_clang_format := "/opt/homebrew/opt/llvm/bin/clang-format"
 
 # Files
 source := src_dir+"/main.c"
-target := target_dir+"/main"
+target := target_dir+project_name
 
 # Common flags
 ldflags_common := "-std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror"
 ldflags_debug := "-c -pthread -lm -Wall -Wextra -ggdb"
 ldflags_emit_llvm := "-S -emit-llvm"
 ldflags_assembly := "-Wall -save-temps"
-ldflags_fsanitize_address := "-O1 -g -fsanitize=address -fno-omit-frame-pointer -c"
+ldflags_fsanitize_address := "-g -fsanitize=address -fno-omit-frame-pointer -c"
 ldflags_fsanitize_object := "-g -fsanitize=address"
+ldflags_fsanitize_thread := "-g -fsanitize=thread -fno-omit-frame-pointer -c"
+ldflags_fsanitize_thread_object := "-g -fsanitize=thread"
 ldflags_fsanitize_valgrind := "-fsanitize=address -g3"
-ldflags_fsanitize_thread := "-fsanitize=thread -g3"
+ldflags_fsanitize_valgrind_O0 := "-O0 -g -std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror"
+ldflags_fsanitize_leak := "-fsanitize=leak -g"
 ldflags_optimize :=  "-Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
 
 # fmt .clang-format(linuxOS)
@@ -37,37 +40,40 @@ fmt_flags := ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec "+clang_f
 # fmt .clang-format(macOS)
 macos_fmt_flags := ". -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.cc'  -o -iname '*.c'-o -iname '*.cxx' -o -iname '*.c' -o -iname '*.h' | "+macos_clang_format+" -style=file -i --files=/dev/stdin"
 
+# fast fmt(fd-find)
+fm_flags := "-e c -e h -e cpp -e hpp -e cc -e cxx -x "+clang_format+" -style=file -i {} \\;"
+
 # (C)gcc compile(LinuxOS)
 [linux]
 r:
 	rm -rf target
 	mkdir -p target
-	{{gcc_which}} {{ldflags_common}} -o {{target}} {{source}}
-	{{target}}
+	{{gcc_which}} {{ldflags_common}} -o {{target_dir}}/{{project_name}} {{source}}
+	{{target_dir}}/{{project_name}}
 
 # (C)gcc compile(macOS)
 [macos]
 r:
 	rm -rf target
 	mkdir -p target
-	{{macos_gcc_which}} {{ldflags_common}} -o {{target}} {{source}}
-	{{target}}
+	{{macos_gcc_which}} {{ldflags_common}} -o {{target_dir}}/{{project_name}} {{source}}
+	{{target_dir}}/{{project_name}}
 
 # (C)clang compile(Optimization/LinuxOS)
 [linux]
 ro:
 	rm -rf target
 	mkdir -p target
-	{{clang_which}} {{ldflags_optimize}} -o {{target}} {{source}}
-	{{target}}
+	{{clang_which}} {{ldflags_optimize}} -o {{target_dir}}/{{project_name}} {{source}}
+	{{target_dir}}/{{project_name}}
 
 # (C)clang compile(Optimization/macOS)
 [macos]
 ro:
 	rm -rf target
 	mkdir -p target
-	{{macos_clang_which}} {{ldflags_optimize}} -o {{target}} {{source}}
-	{{target}}
+	{{macos_clang_which}} {{ldflags_optimize}} -o {{target_dir}}/{{project_name}} {{source}}
+	{{target_dir}}/{{project_name}}
 
 # cmake compile(LinuxOS)
 [linux]
@@ -120,7 +126,7 @@ b:
 move:
 	rm -rf target
 	mkdir target
-	mv *.bc *.i *.s *.o *.ll a.out build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log target
+	mv CMakeCache.txt CMakeFiles cmake_install.cmake .ninja_deps .ninja_log build.ninja *.bc *.i *.s *.o *.ll a.out target
 
 # .clang-format init(LinuxOS)
 [linux]
@@ -144,6 +150,10 @@ fmt:
 fmt:
 	find {{macos_fmt_flags}}
 
+# (fast).clang-format fmt(cargo install fd-find)
+fm:
+	fd {{fm_flags}}
+
 # clang LLVM emit-file
 ll:
 	rm -rf target
@@ -151,7 +161,7 @@ ll:
 	cp -rf {{src_dir}}/*.* ./.
 	{{clang_which}} {{ldflags_emit_llvm}} main.c
 	mv *.ll {{target_dir}}
-	clang {{ldflags_common}} -o {{target}} {{source}}
+	{{clang_which}} {{ldflags_common}} -o {{target}} {{source}}
 	mv *.cpp {{target_dir}}
 	rm -rf *.out
 
@@ -165,13 +175,39 @@ as:
 	mv *.s {{target_dir}}
 	mv *.bc {{target_dir}}
 
-# clang fsanitize_address
-fsan:
+# clang sanitize(ASan=address / LSan=leak / TSan=thread / MSan=memory / UBSan=undefined)
+san SAN:
 	rm -rf target
 	mkdir -p target
-	{{clang_which}} {{ldflags_fsanitize_address}} {{source}} -o {{target}}
-	{{clang_which}} {{ldflags_fsanitize_object}} {{target}}
-	mv *.out {{target_dir}}
+	{{clang_which}} -g -fsanitize={{SAN}} -fno-omit-frame-pointer -c {{source}}
+	{{clang_which}} -g -fsanitize={{SAN}} *.o 
+	mv a.out *.o {{target_dir}}
+	{{target_dir}}/a.out
+
+# clang (ASan)fsanitize_address
+asan:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} {{ldflags_fsanitize_address}} {{source}}
+	{{clang_which}} {{ldflags_fsanitize_object}} *.o 
+	mv a.out *.o {{target_dir}}
+	{{target_dir}}/a.out
+
+# clang LSan_Leak_Sanitizer
+lsan:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} {{ldflags_fsanitize_leak}} {{source}} -o {{target}}
+	{{target}}
+
+# clang TSan_Thread_Sanitizer
+tsan:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} {{ldflags_fsanitize_thread}} {{source}}
+	{{clang_which}} {{ldflags_fsanitize_thread_object}} *.o 
+	mv a.out *.o {{target_dir}}
+	{{target_dir}}/a.out
 
 # leak memory check(valgrind)
 [linux]
@@ -188,6 +224,33 @@ leaks:
 	mkdir -p target
 	{{macos_clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
 	leaks --atExit -- {{target}}
+
+# leak memory check(valgrind)
+[linux]
+valgrind:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} {{ldflags_fsanitize_valgrind_O0}} {{source}} -o {{project_name}}
+	mv {{project_name}} {{target_dir}}
+	valgrind --leak-check=full {{target_dir }}/{{project_name}}
+
+# valgrind --track-origins=yes 
+[linux]
+valgrind_detail:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} {{ldflags_fsanitize_valgrind_O0}} {{source}} -o {{project_name}}
+	mv {{project_name}} {{target_dir}}
+	valgrind --leak-check=full --track-origins=yes {{target_dir }}/{{project_name}}
+
+# valgrind --tool=memcheck --vgdb=yes --vgdb-error=0
+[linux]
+valgrind_memcheck:
+	rm -rf target
+	mkdir -p target
+	{{clang_which}} -O0 -g {{source}} -o {{project_name}}
+	mv {{project_name}} {{target_dir}}
+	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all --tool=memcheck --vgdb=yes --vgdb-error=0 {{target_dir }}/{{project_name}}
  
 # thread check(data race)
 [macos]
@@ -209,12 +272,24 @@ obj:
 	mv *.bc {{target_dir}}
 	objdump --disassemble -S -C {{target_dir}}/main.o
 
-# hex view
+# hex view("rg -i <search>" | "grep -rni <search>")
+[linux]
 xx:
 	rm -rf target
 	mkdir -p target
-	{{clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
-	xxd -c 16 {{target}}
+	{{clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{project_name}}
+	xxd -c 16 {{project_name}} > hex_print.txt
+	mv {{project_name}} hex_print.txt {{target_dir}}
+
+# hex view
+[macos]
+xx:
+	rm -rf target
+	mkdir -p target
+	{{macos_clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{project_name}}
+	xxd -c 16 {{project_name}} > hex_print.txt
+	mv {{project_name}} {{project_name}}.* hex_print.txt {{target_dir}}
+
 
 # clean files
 clean:
