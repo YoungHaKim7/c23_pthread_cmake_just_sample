@@ -47,3 +47,4 @@ Ubuntu clang-format version 20.1.8 (++20250804090239+87f0227cb601-1~exp1~2025080
 - [(250830) Post-Modern Cmake - From 3.0 to 4.0 - Vito Gamberini - C++Now 2025 | CppNow](https://youtu.be/K5Kg8TOTKjU?si=hbfYk_m2JjlpmXKg)
   - set명령에 command실행시 추가하는 방법
     - https://stackoverflow.com/questions/44284275/passing-compiler-options-in-cmake-command-line
+- [(250418)CMake 4 0: What You Need to Know | Kitware](https://youtu.be/TESpxsilA1k?si=LOCfjoLCeNLeOf3l)
