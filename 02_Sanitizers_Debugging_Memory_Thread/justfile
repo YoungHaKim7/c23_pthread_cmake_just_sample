@@ -34,14 +34,17 @@ ldflags_fsanitize_valgrind_O0 := "-O0 -g -std=c23 -pedantic -pthread -pedantic-e
 ldflags_fsanitize_leak := "-fsanitize=leak -g"
 ldflags_optimize :=  "-Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
 
-# fmt .clang-format(linuxOS)
+# fmt .clang-format(LinuxOS)
 fmt_flags := ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec "+clang_format+" -style=file -i {} \\;"
 
 # fmt .clang-format(macOS)
 macos_fmt_flags := ". -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.cc'  -o -iname '*.c'-o -iname '*.cxx' -o -iname '*.c' -o -iname '*.h' | "+macos_clang_format+" -style=file -i --files=/dev/stdin"
 
-# fast fmt(fd-find)
+# fast fmt(fd-find)(LinuxOS)
 fm_flags := "-e c -e h -e cpp -e hpp -e cc -e cxx -x "+clang_format+" -style=file -i {} \\;"
+
+# fast fmt(fd-find)(macOS)
+macos_fm_flags := "-e c -e h -e cpp -e hpp -e cc -e cxx -x "+macos_clang_format+" -style=file -i {} \\;"
 
 # (C)gcc compile(LinuxOS)
 [linux]
@@ -150,9 +153,15 @@ fmt:
 fmt:
 	find {{macos_fmt_flags}}
 
-# (fast).clang-format fmt(cargo install fd-find)
+# (fast).clang-format fmt(cargo install fd-find)(LinuxOS)
+[linux]
 fm:
 	fd {{fm_flags}}
+
+# (fast).clang-format fmt(cargo install fd-find)(macOS)
+[macos]
+fm:
+	fd {{macos_fm_flags}}
 
 # clang LLVM emit-file
 ll:
