@@ -7,6 +7,8 @@
 
 <hr />
 
+# C OS dev.
+
 # (250514) OSdev 01 Coding your own MS-DOS operating system in C | dr Jonas Birch
 - https://youtu.be/04BplOHSY_A?si=dpqYfsoWXLZdREds
 
@@ -15,4 +17,15 @@
 - [(250607) OSdev 04 Coding your own File System in C | dr Jonas Birch](https://youtu.be/d8flm9qT5O0?si=3lM2th-VsVRGuFW8)
 - [(250721) OSdev 05 Coding files at the OS level | dr Jonas Birch](https://youtu.be/ZJw3YAWfk5g?si=3J2puF9Nq4ef2ZMy)
 
+<hr />
 
+# (250912)Project: Writing our own C pre-processor | dr Jonas Birch
+- https://youtu.be/gUzPQ6kMcXo?si=L2aABeWRoyDX8P97
+
+<hr />
+
+# C GUI
+
+# (250615)Coding a Graphical User Interface in C - from scratch | dr Jonas Birch
+- https://youtu.be/wdSPqru3NDo?si=kOZzAOz-GszIy1sX
+- [(250622_11시간) Coding a Graphical User Interface in C - from scratch | dr Jonas Birch](https://youtu.be/Z6BWRcfnivo?si=c-VXQ9t4HSeR1EhS)
