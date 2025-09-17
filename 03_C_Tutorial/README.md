@@ -4,3 +4,15 @@
 
 # (250424)Go from mid-level to advanced C programmer in two hours | dr Jonas Birch
 - https://youtu.be/eh8zBTTgRn4?si=PRfGVoKeyiMaz_kT
+
+<hr />
+
+# (250514) OSdev 01 Coding your own MS-DOS operating system in C | dr Jonas Birch
+- https://youtu.be/04BplOHSY_A?si=dpqYfsoWXLZdREds
+
+- [(250522) OSdev 02 Designing your own File System | dr Jonas Birch](https://youtu.be/39IBvSZq6ho?si=U6wY0Vce5pflYV5f)
+- [(250603) OSdev 03 Coding a Disk Emulator in C | dr Jonas Birch](https://youtu.be/CQxqx5Xi3eE?si=4K1lOvAH3R0pexpk)
+- [(250607) OSdev 04 Coding your own File System in C | dr Jonas Birch](https://youtu.be/d8flm9qT5O0?si=3lM2th-VsVRGuFW8)
+- [(250721) OSdev 05 Coding files at the OS level | dr Jonas Birch](https://youtu.be/ZJw3YAWfk5g?si=3J2puF9Nq4ef2ZMy)
+
+
