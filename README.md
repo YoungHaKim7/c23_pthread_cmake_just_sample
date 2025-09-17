@@ -50,4 +50,8 @@ Ubuntu clang-format version 20.1.8 (++20250804090239+87f0227cb601-1~exp1~2025080
     - https://stackoverflow.com/questions/44284275/passing-compiler-options-in-cmake-command-line
 - [(250418) CMake 4 0: What You Need to Know | Kitware](https://youtu.be/TESpxsilA1k?si=LOCfjoLCeNLeOf3l)
 - [(250215) import CMake; // Mastering C++ Modules - Bill Hoffman - CppCon 2024 | CppCon](https://youtu.be/7WK42YSfE9s?si=mmlQQDcx1F5Jb1fZ)
+- CmakePresets.json
+  - [(210507)CMakePresets.json 소개 | Microsoft Developer](https://youtu.be/NFbnm1t6Mc4?si=fEynkOaO6XlI1-EF)
+    - CMakePresets.json은 CMake 3.19/3.20에서 CMake에 추가되었으며, 사용자가 일반적인 구성, 빌드 및 테스트 옵션을 다른 사용자와 공유할 수 있도록 합니다. Microsoft와 Kitware 담당자들이 CMakePresets.json과 이를 통해 해결하고자 하는 문제에 대해 논의하는 자리에 함께해 보세요. 또한 Visual Studio, Visual Studio Code 및 CLI에서 CMakePresets.json을 지원하는 방법을 시연합니다 
+
 
