@@ -2,6 +2,11 @@
 - malloc
   - [(250826)Coding malloc in C from Scratch | HirschDaniel](https://youtu.be/_HLAWI84aFA?si=8Vnou5W3Cc_shQrl)
 
+<hr />
+
+# (영상모아보기)C and other Collections and Tutorials (dr Jonas Birch)
+- https://youtube.com/playlist?list=PLdNUbYq5poiXB74p8swKilghw2Nv4RuWp&si=Uz1k4aNaDOvkrirn
+
 # (250424)Go from mid-level to advanced C programmer in two hours | dr Jonas Birch
 - https://youtu.be/eh8zBTTgRn4?si=PRfGVoKeyiMaz_kT
 
