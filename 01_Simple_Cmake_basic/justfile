@@ -100,6 +100,59 @@ cr:
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/target/{{project_name}}
 
+# cmake compile(LinuxOS)
+[linux]
+cro:
+	rm -rf build
+	mkdir -p build
+	cmake -D CMAKE_BUILD_TYPE=RelWithDebInfo \
+	      -D CMAKE_C_COMPILER={{gcc_which}} \
+	      -D CMAKE_C_FLAGS_RELWITHDEBINFO_INIT="-O2 -g" \
+	      -G Ninja .
+	ninja
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
+	./build/target/{{project_name}}
+    
+# cmake compile(LinuxOS)
+[macos]
+cro:
+	rm -rf build
+	mkdir -p build
+	cmake -D CMAKE_BUILD_TYPE=RelWithDebInfo \
+	      -D CMAKE_C_COMPILER={{macos_gcc_which}} \
+	      -D CMAKE_C_FLAGS_RELWITHDEBINFO_INIT="-O2 -g" \
+	      -G Ninja .
+	ninja
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
+	./build/target/{{project_name}}
+
+# cmake compile(LinuxOS)
+[linux]
+cro3:
+	rm -rf build
+	mkdir -p build
+	cmake -D CMAKE_BUILD_TYPE=Release \
+	      -D CMAKE_C_COMPILER={{gcc_which}} \
+	      -D CMAKE_C_FLAGS_RELEASE_INIT="-O3 -DNDEBUG" \
+	      -G Ninja .
+	ninja
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
+	./build/target/{{project_name}}
+
+# cmake compile(macOS)
+[macos]
+cro3:
+	rm -rf build
+	mkdir -p build
+	cmake -D CMAKE_BUILD_TYPE=Release \
+	      -D CMAKE_C_COMPILER={{macos_gcc_which}} \
+	      -D CMAKE_C_FLAGS_RELEASE_INIT="-O3 -DNDEBUG" \
+	      -G Ninja .
+	ninja
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
+	./build/target/{{project_name}}
+	
+
 # zig C compile(LinuxOS)
 [linux]
 zr:
