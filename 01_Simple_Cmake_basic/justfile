@@ -43,6 +43,9 @@ macos_fmt_flags := ". -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.cc'  -o -ina
 # fast fmt(fd-find)
 fm_flags := "-e c -e h -e cpp -e hpp -e cc -e cxx -x "+clang_format+" -style=file -i {} \\;"
 
+# fast fmt(fd-find)
+macos_fm_flags := "-e c -e h -e cpp -e hpp -e cc -e cxx -x "+macos_clang_format+" -style=file -i {} \\;"
+
 # (C)gcc compile(LinuxOS)
 [linux]
 r:
@@ -97,7 +100,6 @@ cr:
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/target/{{project_name}}
 
-
 # zig C compile(LinuxOS)
 [linux]
 zr:
@@ -140,19 +142,25 @@ cl:
 	rm -rf .clang-format
 	{{macos_clang_format}} -style=WebKit -dump-config > .clang-format
 
-# .clang-format fmt
+# .clang-format fmt(LinuxOS)
 [linux]
 fmt:
 	find {{fmt_flags}}
 
-# .clang-format fmt(macos)
+# .clang-format fmt(macOS)
 [macos]
 fmt:
 	find {{macos_fmt_flags}}
 
-# (fast).clang-format fmt(cargo install fd-find)
+# (fast).clang-format fmt(cargo install fd-find)(LinuxOS)
+[linux]
 fm:
 	fd {{fm_flags}}
+
+# (fast).clang-format fmt(cargo install fd-find)(macOS)
+[macos]
+fm:
+	fd {{macos_fm_flags}}
 
 # clang LLVM emit-file
 ll:
