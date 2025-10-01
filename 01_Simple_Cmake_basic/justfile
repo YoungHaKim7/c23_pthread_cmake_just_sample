@@ -1,24 +1,46 @@
+# Detect OS
+os := `uname`
+
+# project name
 project_name := `basename "$(pwd)"`
 
-# linuxOS
-clang_which := "/usr/bin/clang-20"
-gcc_which := "/opt/gcc-15/bin/gcc"
+# clang & gcc basic & clang-format basic
+clang := `which clang` 
+gcc := `which gcc`
+clang_format_basic := `which clang-format`
 
-# macOS
-macos_clang_which := "/opt/homebrew/opt/llvm/bin/clang"
-macos_gcc_which := "/opt/homebrew/opt/gcc@15/bin/gcc-15"
+# compiler settings
+clang_which := if os == "Linux" { \
+  "/usr/bin/clang-20" \
+  } else if os == "Darwin" { \
+    "/opt/homebrew/opt/llvm/bin/clang" \
+  } else { \
+    clang \
+  }
+gcc_which := if os == "Linux" { \
+    "/opt/gcc-15/bin/gcc" \
+  } else if os == "Darwin" { \
+    "/opt/homebrew/opt/gcc@15/bin/gcc-15" \
+  } else { \
+    gcc \
+  }
 
 # Source and target directories
 src_dir := "./src"
 target_dir := "./target"
 
 # clang-format 20
-clang_format := "clang-format-20"
-macos_clang_format := "/opt/homebrew/opt/llvm/bin/clang-format"
+clang_format := if os == "Linux" { \
+    "clang-format-20" \
+  } else if os == "Darwin" { \
+    "/opt/homebrew/opt/llvm/bin/clang-format" \
+  } else { \
+    clang_format_basic \
+  }
 
 # Files
 source := src_dir+"/main.c"
-target := target_dir+project_name
+target := target_dir+"/"+project_name
 
 # Common flags
 ldflags_common := "-std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror"
@@ -35,51 +57,46 @@ ldflags_fsanitize_leak := "-fsanitize=leak -g"
 ldflags_optimize :=  "-Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
 
 # fmt .clang-format(linuxOS)
-fmt_flags := ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec "+clang_format+" -style=file -i {} \\;"
+fmt_flags := ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec " \
+  +clang_format+ \
+  " -style=file -i {} \\;"
 
 # fmt .clang-format(macOS)
-macos_fmt_flags := ". -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.cc'  -o -iname '*.c'-o -iname '*.cxx' -o -iname '*.c' -o -iname '*.h' | "+macos_clang_format+" -style=file -i --files=/dev/stdin"
+macos_fmt_flags := ". -iname '*.cpp' \
+  -o -iname '*.hpp' \
+  -o -iname '*.cc' \
+  -o -iname '*.c' \
+  -o -iname '*.cxx' \
+  -o -iname '*.c' \
+  -o -iname '*.h' | " \
+  +clang_format+ \
+  " -style=file -i --files=/dev/stdin"
 
-# fast fmt(fd-find)
-fm_flags := "-e c -e h -e cpp -e hpp -e cc -e cxx -x "+clang_format+" -style=file -i {} \\;"
-
-# fast fmt(fd-find)
-macos_fm_flags := "-e c -e h -e cpp -e hpp -e cc -e cxx -x "+macos_clang_format+" -style=file -i {} \\;"
+# fast fmt(LinuxOS / macOS)(Install "cargo install fd-find")
+fm_flags := "-e c \
+  -e h \
+  -e cpp \
+  -e hpp \
+  -e cc \
+  -e cxx -x " \
+  +clang_format+  \
+  " -style=file -i {} \\;"
 
 # (C)gcc compile(LinuxOS)
-[linux]
 r:
-	rm -rf target
-	mkdir -p target
+	rm -rf {{target_dir}}
+	mkdir -p {{target_dir}}
 	{{gcc_which}} {{ldflags_common}} -o {{target_dir}}/{{project_name}} {{source}}
-	{{target_dir}}/{{project_name}}
+	{{target}}
 
-# (C)gcc compile(macOS)
-[macos]
-r:
-	rm -rf target
-	mkdir -p target
-	{{macos_gcc_which}} {{ldflags_common}} -o {{target_dir}}/{{project_name}} {{source}}
-	{{target_dir}}/{{project_name}}
-
-# (C)clang compile(Optimization/LinuxOS)
-[linux]
+# (C)clang compile(Optimization/LinuxOS/ macOS)
 ro:
-	rm -rf target
-	mkdir -p target
+	rm -rf {{target_dir}}
+	mkdir -p {{target_dir}}
 	{{clang_which}} {{ldflags_optimize}} -o {{target_dir}}/{{project_name}} {{source}}
-	{{target_dir}}/{{project_name}}
-
-# (C)clang compile(Optimization/macOS)
-[macos]
-ro:
-	rm -rf target
-	mkdir -p target
-	{{macos_clang_which}} {{ldflags_optimize}} -o {{target_dir}}/{{project_name}} {{source}}
-	{{target_dir}}/{{project_name}}
+	{{target}}
 
 # cmake compile(LinuxOS)
-[linux]
 cr:
 	rm -rf build
 	mkdir -p build
@@ -87,21 +104,9 @@ cr:
 	cmake -D CMAKE_C_COMPILER={{gcc_which}} -G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/target/{{project_name}}
-
-# cmake compile(macOS)
-[macos]
-cr:
-	rm -rf build
-	mkdir -p build
-	export CC={{macos_gcc_which}}
-	cmake -D CMAKE_C_COMPILER={{macos_gcc_which}} -G Ninja .
-	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/target/{{project_name}}
+	./build/{{target}}
 
 # cmake compile(LinuxOS)
-[linux]
 cro:
 	rm -rf build
 	mkdir -p build
@@ -111,23 +116,9 @@ cro:
 	      -G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/target/{{project_name}}
-    
-# cmake compile(LinuxOS)
-[macos]
-cro:
-	rm -rf build
-	mkdir -p build
-	cmake -D CMAKE_BUILD_TYPE=RelWithDebInfo \
-	      -D CMAKE_C_COMPILER={{macos_gcc_which}} \
-	      -D CMAKE_C_FLAGS_RELWITHDEBINFO_INIT="-O2 -g" \
-	      -G Ninja .
-	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/target/{{project_name}}
+	./build/{{target}}
 
 # cmake compile(LinuxOS)
-[linux]
 cro3:
 	rm -rf build
 	mkdir -p build
@@ -137,63 +128,41 @@ cro3:
 	      -G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/target/{{project_name}}
-
-# cmake compile(macOS)
-[macos]
-cro3:
-	rm -rf build
-	mkdir -p build
-	cmake -D CMAKE_BUILD_TYPE=Release \
-	      -D CMAKE_C_COMPILER={{macos_gcc_which}} \
-	      -D CMAKE_C_FLAGS_RELEASE_INIT="-O3 -DNDEBUG" \
-	      -G Ninja .
-	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/target/{{project_name}}
-	
+	./build/{{target}}
 
 # zig C compile(LinuxOS)
-[linux]
 zr:
-	rm -rf target
-	mkdir -p target
+	rm -rf {{target_dir}}
+	mkdir -p {{target_dir}}
 	export CC={{gcc_which}}
 	zig cc {{ldflags_common}} -o {{target}} {{source}}
 	{{target}}
-
-# zig C compile(macOS)
-[macos]
-zr:
-	rm -rf target
-	mkdir -p target
-	export CC={{macos_gcc_which}}
-	zig cc {{ldflags_common}} -o {{target}} {{source}}
-	{{target}}
+	
+# cmake ctest
+ctest:
+	rm -rf build
+	mkdir -p build
+	cmake -D CMAKE_C_COMPILER={{gcc_which}} \
+		  -S . -B build
+	cmake --build build
+	ctest --test-dir ./build
 
 # clang build
 b:
-	rm -rf target
-	mkdir -p target
+	rm -rf {{target_dir}}
+	mkdir -p {{target_dir}}
 	{{clang_which}} {{ldflags_debug}} -o {{target}} {{source}}
 
 # move target
 move:
-	rm -rf target
-	mkdir target
+	rm -rf {{target_dir}}
+	mkdir {{target_dir}}
 	mv CMakeCache.txt CMakeFiles cmake_install.cmake .ninja_deps .ninja_log build.ninja *.bc *.i *.s *.o *.ll a.out target
 
-# .clang-format init(LinuxOS)
-[linux]
+# .clang-format init(LinuxOS/macOS)
 cl:
 	rm -rf .clang-format
 	{{clang_format}} -style=WebKit -dump-config > .clang-format
-
-# .clang-format init(macOS)
-[macos]
-cl:
-	rm -rf .clang-format
-	{{macos_clang_format}} -style=WebKit -dump-config > .clang-format
 
 # .clang-format fmt(LinuxOS)
 [linux]
@@ -205,15 +174,9 @@ fmt:
 fmt:
 	find {{macos_fmt_flags}}
 
-# (fast).clang-format fmt(cargo install fd-find)(LinuxOS)
-[linux]
+# (fast).clang-format fmt(cargo install fd-find)(LinuxOS / macOS)
 fm:
 	fd {{fm_flags}}
-
-# (fast).clang-format fmt(cargo install fd-find)(macOS)
-[macos]
-fm:
-	fd {{macos_fm_flags}}
 
 # clang LLVM emit-file
 ll:
@@ -283,7 +246,7 @@ leaks:
 leaks:
 	rm -rf target
 	mkdir -p target
-	{{macos_clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
+	{{clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{target}}
 	leaks --atExit -- {{target}}
 
 # leak memory check(valgrind)
@@ -314,11 +277,10 @@ valgrind_memcheck:
 	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all --tool=memcheck --vgdb=yes --vgdb-error=0 {{target_dir }}/{{project_name}}
  
 # thread check(data race)
-[macos]
 thread:
 	rm -rf target
 	mkdir -p target
-	{{macos_clang_which}} {{ldflags_fsanitize_thread}} {{source}} -o {{target}}
+	{{clang_which}} {{ldflags_fsanitize_thread}} {{source}} -o {{target}}
 	{{target}}
 
 
@@ -342,15 +304,14 @@ xx:
 	xxd -c 16 {{project_name}} > hex_print.txt
 	mv {{project_name}} hex_print.txt {{target_dir}}
 
-# hex view
+# hex view("rg -i <search>" | "grep -rni <search>")
 [macos]
 xx:
 	rm -rf target
 	mkdir -p target
-	{{macos_clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{project_name}}
+	{{clang_which}} {{ldflags_fsanitize_valgrind}} {{source}} -o {{project_name}}
 	xxd -c 16 {{project_name}} > hex_print.txt
 	mv {{project_name}} {{project_name}}.* hex_print.txt {{target_dir}}
-
 
 # clean files
 clean:
@@ -440,7 +401,6 @@ codelldb:
 	echo '    "version": "2.0.0"' >> .vscode/tasks.json
 	echo '}' >> .vscode/tasks.json
 
-
 # Debugging(VSCode)
 vscode:
 	rm -rf .vscode
@@ -501,4 +461,4 @@ vscode:
 	echo '        }' >> .vscode/tasks.json
 	echo '    ],' >> .vscode/tasks.json
 	echo '    "version": "2.0.0"' >> .vscode/tasks.json
-	echo '}' >> .vscode/tasks.json
+	echo '}' >> .vscode/tasks.json	
