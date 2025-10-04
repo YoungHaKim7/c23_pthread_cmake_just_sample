@@ -3,11 +3,14 @@ os := `uname`
 
 # project name
 project_name := `basename "$(pwd)"`
+full_project_name := `pwd`
 
-# clang & gcc basic & clang-format basic
-clang := `which clang-20` 
+# clang & gcc basic & clang-format basic & cmake basic
+clang := `which clang` 
+clangpp := `which clang++` 
 gcc := `which gcc`
-clang_format_basic := `which clang-format-20`
+clang_format_basic := `which clang-format`
+cmake := `which cmake`
 
 # compiler settings
 clang_which := if os == "Linux" { \
@@ -17,12 +20,28 @@ clang_which := if os == "Linux" { \
   } else { \
     clang \
   }
+clangpp_which := if os == "Linux" { \
+  "/usr/bin/clang++-20" \
+  } else if os == "Darwin" { \
+    "/opt/homebrew/opt/llvm/bin/clang++" \
+  } else { \
+    clangpp \
+  }
 gcc_which := if os == "Linux" { \
     "/opt/gcc-15/bin/gcc" \
   } else if os == "Darwin" { \
     "/opt/homebrew/opt/gcc@15/bin/gcc-15" \
   } else { \
     gcc \
+  }
+
+# cmake settings(4.0)
+cmake_which := if os == "Linux" { \
+    "/usr/local/bin/cmake" \
+  } else if os == "Darwin" { \
+    "/opt/homebrew/bin/cmake"
+  } else { \
+    cmake \
   }
 
 # clang-format 20
@@ -159,6 +178,17 @@ b:
 	rm -rf {{target_dir}}
 	mkdir -p {{target_dir}}
 	{{clang_which}} {{ldflags_debug}} -o {{target}} {{source}}
+
+# clangd .cache(c23 LSP build)
+clangd:
+	rm -rf .cache
+	{{cmake_which}} -DCMAKE_BUILD_TYPE:STRING=Debug \
+					-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
+					-DCMAKE_C_COMPILER:FILEPATH={{clang_which}} \
+					-DCMAKE_CXX_COMPILER:FILEPATH={{clangpp_which}} --no-warn-unused-cli \
+					-S {{full_project_name}} \
+					-B {{full_project_name}}/build \
+					-G Ninja
 
 # move target
 move:
@@ -316,7 +346,7 @@ xx:
 # clean files
 clean:
 	rm -rf {{target_dir}} *.out {{src_dir}}/*.out *.bc {{src_dir}}/target/ *.dSYM {{src_dir}}/*.dSYM *.i *.o *.s
-	rm -rf build CMakeCache.txt CMakeFiles
+	rm -rf build CMakeCache.txt CMakeFiles .cache
 
 # C init
 init:
