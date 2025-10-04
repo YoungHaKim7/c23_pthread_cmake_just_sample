@@ -348,7 +348,7 @@ clean:
 	rm -rf {{target_dir}} *.out {{src_dir}}/*.out *.bc {{src_dir}}/target/ *.dSYM {{src_dir}}/*.dSYM *.i *.o *.s
 	rm -rf build CMakeCache.txt CMakeFiles .cache
 
-# C init
+# C init(int main(void))
 init:
 	mkdir -p src
 	echo '# BasedOnStyle: WebKit' > .clang-format
@@ -366,6 +366,32 @@ init:
 	echo '' >> src/main.c
 	echo 'int main(void) {' >> src/main.c
 	echo '    printf("Hello world C lang ");' >> src/main.c
+	echo '    return 0;' >> src/main.c
+	echo '}' >> src/main.c
+
+# C init(int main(int argc, char* argv[]))
+init2:
+	mkdir -p src
+	echo '# BasedOnStyle: WebKit' > .clang-format
+	echo '# LLVM, Google, Chromium, Mozilla, WebKit' >> .clang-format
+	echo "" >> .clang-format
+	echo 'BasedOnStyle: WebKit' >> .clang-format
+	echo 'IndentWidth: 4' >> .clang-format
+	echo 'ContinuationIndentWidth: 4' >> .clang-format
+	echo 'IndentCaseLabels: false' >> .clang-format
+	echo 'IndentCaseBlocks: false' >> .clang-format
+	echo 'IndentGotoLabels: true' >> .clang-format
+	echo 'IndentPPDirectives: None' >> .clang-format
+	echo 'IndentExternBlock: NoIndent' >> .clang-format
+	echo '#include <stdio.h>' > src/main.c
+	echo '' >> src/main.c
+	echo 'int main(int argc, char* argv[]) {' >> src/main.c
+	echo '    printf("Hello world C lang ");' >> src/main.c
+	echo '    int i;' >> src/main.c
+	echo '    ' >> src/main.c
+	echo '    for (i=0; i < argc; i++) {' >> src/main.c
+	echo '        printf("%s", argv[i]);' >> src/main.c
+	echo '    }' >> src/main.c
 	echo '    return 0;' >> src/main.c
 	echo '}' >> src/main.c
 
