@@ -380,9 +380,9 @@ init:
 	echo '# set(CMAKE_C_COMPILER "/opt/gcc-15/bin/gcc")' >> CMakeLists.txt
 	echo '# Force GCC 15(macOS)' >> CMakeLists.txt
 	echo '# set(CMAKE_C_COMPILER "/opt/homebrew/opt/gcc@15/bin/gcc-15")' >> CMakeLists.txt
-	echo '# Force Clang 20(LinuxOS)' >> CMakeLists.txt
-	echo '# set(CMAKE_C_COMPILER "/usr/bin/clang-20")' >> CMakeLists.txt
-	echo '# Force Clang 20(macOS)' >> CMakeLists.txt
+	echo '# Force Clang 21(LinuxOS)' >> CMakeLists.txt
+	echo '# set(CMAKE_C_COMPILER "/usr/bin/clang-21")' >> CMakeLists.txt
+	echo '# Force Clang 21(macOS)' >> CMakeLists.txt
 	echo '# set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang")' >> CMakeLists.txt
 	echo '' >> CMakeLists.txt
 	echo 'set(CMAKE_C_STANDARD 23)' >> CMakeLists.txt
