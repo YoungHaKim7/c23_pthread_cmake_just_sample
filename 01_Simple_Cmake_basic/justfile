@@ -14,14 +14,14 @@ cmake := `which cmake`
 
 # compiler settings
 clang_which := if os == "Linux" { \
-  "/usr/bin/clang-20" \
+  "/usr/bin/clang-21" \
   } else if os == "Darwin" { \
     "/opt/homebrew/opt/llvm/bin/clang" \
   } else { \
     clang \
   }
 clangpp_which := if os == "Linux" { \
-  "/usr/bin/clang++-20" \
+  "/usr/bin/clang++-21" \
   } else if os == "Darwin" { \
     "/opt/homebrew/opt/llvm/bin/clang++" \
   } else { \
@@ -44,9 +44,9 @@ cmake_which := if os == "Linux" { \
     cmake \
   }
 
-# clang-format 20
+# clang-format 21
 clang_format := if os == "Linux" { \
-    "clang-format-20" \
+    "clang-format-21" \
   } else if os == "Darwin" { \
     "/opt/homebrew/opt/llvm/bin/clang-format" \
   } else { \
@@ -110,6 +110,7 @@ ldflags_fsanitize_leak := "-fsanitize=leak -g"
 
 # (C)gcc compile(LinuxOS)
 r:
+	just fm
 	rm -rf {{target_dir}}
 	mkdir -p {{target_dir}}
 	{{gcc_which}} {{ldflags_common}} -o {{target_dir}}/{{project_name}} {{source}}
@@ -124,6 +125,7 @@ ro:
 
 # cmake compile(LinuxOS)
 cr:
+	just fm
 	rm -rf build
 	mkdir -p build
 	export CC={{gcc_which}}
@@ -230,7 +232,7 @@ as:
 	mv *.s {{target_dir}}
 	mv *.bc {{target_dir}}
 
-# Clang Sanitize(ASan=Address / LSan=Leak / TSan=Thread / MSan=Memory / UBSan=Undefined Behavior)
+# Clang Sanitize(ASan=address / LSan=leak / TSan=thread / MSan=memory / UBSan=undefined (Undefined Behavior)
 san SAN:
 	rm -rf target
 	mkdir -p target
@@ -287,7 +289,7 @@ valgrind:
 	mkdir -p target
 	{{clang_which}} {{ldflags_fsanitize_valgrind_O0}} {{source}} -o {{project_name}}
 	mv {{project_name}} {{target_dir}}
-	valgrind --leak-check=full {{target_dir }}/{{project_name}}
+	valgrind --leak-check=full {{target_dir}}/{{project_name}}
 
 # valgrind --track-origins=yes 
 [linux]
@@ -351,6 +353,12 @@ clean:
 # C init(int main(void))
 init:
 	mkdir -p src
+	echo '#include <stdio.h>' > src/main.c
+	echo '' >> src/main.c
+	echo 'int main(void) {' >> src/main.c
+	echo '    printf("Hello world C lang ");' >> src/main.c
+	echo '    return 0;' >> src/main.c
+	echo '}' >> src/main.c
 	echo '# BasedOnStyle: WebKit' > .clang-format
 	echo '# LLVM, Google, Chromium, Mozilla, WebKit' >> .clang-format
 	echo "" >> .clang-format
@@ -362,12 +370,61 @@ init:
 	echo 'IndentGotoLabels: true' >> .clang-format
 	echo 'IndentPPDirectives: None' >> .clang-format
 	echo 'IndentExternBlock: NoIndent' >> .clang-format
-	echo '#include <stdio.h>' > src/main.c
-	echo '' >> src/main.c
-	echo 'int main(void) {' >> src/main.c
-	echo '    printf("Hello world C lang ");' >> src/main.c
-	echo '    return 0;' >> src/main.c
-	echo '}' >> src/main.c
+	echo 'cmake_minimum_required(VERSION 4.0)' >> CMakeLists.txt
+	echo '' >> CMakeLists.txt
+	echo 'get_filename_component(ProjectId ${CMAKE_CURRENT_SOURCE_DIR} NAME)' >> CMakeLists.txt
+	echo 'string(REPLACE " " "_" ProjectId ${ProjectId})' >> CMakeLists.txt
+	echo 'project(${ProjectId} LANGUAGES C)' >> CMakeLists.txt
+	echo '' >> CMakeLists.txt
+	echo '# Force GCC 15(LinuxOS)' >> CMakeLists.txt
+	echo '# set(CMAKE_C_COMPILER "/opt/gcc-15/bin/gcc")' >> CMakeLists.txt
+	echo '# Force GCC 15(macOS)' >> CMakeLists.txt
+	echo '# set(CMAKE_C_COMPILER "/opt/homebrew/opt/gcc@15/bin/gcc-15")' >> CMakeLists.txt
+	echo '# Force Clang 20(LinuxOS)' >> CMakeLists.txt
+	echo '# set(CMAKE_C_COMPILER "/usr/bin/clang-20")' >> CMakeLists.txt
+	echo '# Force Clang 20(macOS)' >> CMakeLists.txt
+	echo '# set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang")' >> CMakeLists.txt
+	echo '' >> CMakeLists.txt
+	echo 'set(CMAKE_C_STANDARD 23)' >> CMakeLists.txt
+	echo 'set(CMAKE_C_STANDARD_REQUIRED ON)' >> CMakeLists.txt
+	echo 'set(CMAKE_C_EXTENSIONS OFF)' >> CMakeLists.txt
+	echo '# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)' >> CMakeLists.txt
+	echo 'SET (CMAKE_C_FLAGS_INIT                "-Wall -std=c23")' >> CMakeLists.txt
+	echo 'SET (CMAKE_C_FLAGS_DEBUG_INIT          "-g")' >> CMakeLists.txt
+	echo 'SET (CMAKE_C_FLAGS_MINSIZEREL_INIT     "-Os -DNDEBUG")' >> CMakeLists.txt
+	echo 'SET (CMAKE_C_FLAGS_RELEASE_INIT        "-O3 -DNDEBUG")' >> CMakeLists.txt
+	echo 'SET (CMAKE_C_FLAGS_RELWITHDEBINFO_INIT "-O2 -g")' >> CMakeLists.txt
+	echo '' >> CMakeLists.txt
+	echo 'SET (CMAKE_CXX_FLAGS_INIT                "-Wall -std=c++26")' >> CMakeLists.txt
+	echo 'SET (CMAKE_CXX_FLAGS_DEBUG_INIT          "-g")' >> CMakeLists.txt
+	echo 'SET (CMAKE_CXX_FLAGS_MINSIZEREL_INIT     "-Os -DNDEBUG")' >> CMakeLists.txt
+	echo 'SET (CMAKE_CXX_FLAGS_RELEASE_INIT        "-O3 -DNDEBUG")' >> CMakeLists.txt
+	echo 'SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT "-O2 -g")' >> CMakeLists.txt
+	echo '' >> CMakeLists.txt
+	echo '# Common compile flags' >> CMakeLists.txt
+	echo 'add_compile_options(' >> CMakeLists.txt
+	echo '    -pedantic' >> CMakeLists.txt
+	echo '    -pthread' >> CMakeLists.txt
+	echo '    -pedantic-errors' >> CMakeLists.txt
+	echo '    -lm' >> CMakeLists.txt
+	echo '    -Wall' >> CMakeLists.txt
+	echo '    -Wextra' >> CMakeLists.txt
+	echo '    -ggdb' >> CMakeLists.txt
+	echo '    # -std=c23' >> CMakeLists.txt
+	echo ')' >> CMakeLists.txt
+	echo ''>> CMakeLists.txt
+	echo '# Main executable with C sources' >> CMakeLists.txt
+	echo 'add_executable(${ProjectId}' >> CMakeLists.txt
+	echo '    src/main.c' >> CMakeLists.txt
+	echo '    # src/mandelbrot.c' >> CMakeLists.txt
+	echo ')' >> CMakeLists.txt
+	echo '' >> CMakeLists.txt
+	echo 'target_link_options(${ProjectId} PRIVATE -pthread -lm)' >> CMakeLists.txt
+	echo '' >> CMakeLists.txt
+	echo '# Output directory' >> CMakeLists.txt
+	echo 'set_target_properties(${ProjectId} PROPERTIES' >> CMakeLists.txt
+	echo '    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/target' >> CMakeLists.txt
+	echo ')' >> CMakeLists.txt
 
 # C init(int main(int argc, char* argv[]))
 init2:
