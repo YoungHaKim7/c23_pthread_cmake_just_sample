@@ -1,7 +1,7 @@
 # BasedOnStyle: WebKit
 # LLVM, Google, Chromium, Mozilla, WebKit
 
-BasedOnStyle: WebKit
+BasedOnStyle: LLVM
 IndentWidth: 4
 ContinuationIndentWidth: 4
 IndentCaseLabels: false
