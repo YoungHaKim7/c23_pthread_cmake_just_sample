@@ -4,7 +4,9 @@
 - `constexpr`
   - https://en.cppreference.com/c/language/constexpr
 
-
+# 잘 정리된 Github
+- A cheatsheet of modern C language and library features.
+  - https://github.com/AnthonyCalandra/modern-c-features
 
 # 잘 정리된 외국 Blog
 - https://simplifycpp.org/articles/a0583/what-s-new-in-the-c23-standard-for-the-c-programming-language/
