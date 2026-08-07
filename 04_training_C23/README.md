@@ -1,3 +1,10 @@
+# link
+
+- P99 is a suite of macro and function definitions that ease the programming in C99, aka C 1999. By using new tools from C99 we implement default arguments for functions, scope bound resource management, transparent allocation and initialization, ...
+  - https://gitlab.inria.fr/gustedt/p99
+
+<hr />
+
 # C23
 - https://cppreference.com/c/23
 
