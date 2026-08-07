@@ -5,7 +5,7 @@
       "command": "just cr",
       "cwd": "$ZED_WORKTREE_ROOT"
     },
-    "program": "$ZED_WORKTREE_ROOT/target/debug/a04_debug_release_target_openSUSE260806",
+    "program": "$ZED_WORKTREE_ROOT/target/debug/sample_c23_stdlib_h",
     "request": "launch",
     "adapter": "CodeLLDB"
   }
