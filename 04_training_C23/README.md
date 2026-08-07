@@ -5,6 +5,10 @@
 
 - https://inria.hal.science/hal-02383654/document
 
+- C23 snippets
+  - code examples of some of the new features added in C23
+    - https://github.com/skig/c23_snippets
+
 <hr />
 
 # (유료 책) Jens Gustedt
