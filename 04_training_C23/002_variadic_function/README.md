@@ -1,4 +1,7 @@
-Yes. The important point is that **C23 changes both the function parameter-list syntax and `va_start`**.
+# va_arg
+- https://en.cppreference.com/c/variadic/va_arg
+
+- Yes. The important point is that **C23 changes both the function parameter-list syntax and `va_start`**.
 
 ### Before C23
 
