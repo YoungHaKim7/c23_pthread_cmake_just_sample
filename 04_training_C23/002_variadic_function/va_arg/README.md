@@ -610,15 +610,16 @@ This calculates the **population standard deviation**.
 
 The formula is:
 
-[
+$
 \sigma =
 \sqrt{
-\frac{\sum x_i^2}{n}
+\frac{\sum x_i^2}{n}$
 --------------------
 
+$
 \left(\frac{\sum x_i}{n}\right)^2
 }
-]
+$
 
 Your program implements exactly that formula.
 
@@ -696,8 +697,9 @@ This is the **mean**, or average.
 
 Indeed:
 
-[
+$
 \frac{25.0+27.3+26.9+25.7}{4}
+$
 =============================
 
 26.225
@@ -1224,17 +1226,17 @@ uses `%f` to print the `double` with **six digits after the decimal point**, pro
 
 Your function calculates the **population standard deviation**:
 
-[
+$
 \sigma =
 \sqrt{\frac{\sum(x_i-\mu)^2}{N}}
-]
+$
 
 not the **sample standard deviation**, which would divide by `N - 1`:
 
-[
+$
 s =
 \sqrt{\frac{\sum(x_i-\bar{x})^2}{N-1}}
-]
+$
 
 For these four values:
 
