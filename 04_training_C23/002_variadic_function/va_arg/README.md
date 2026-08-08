@@ -4,6 +4,15 @@
 0.920258
 ```
 
+# 표준 편차 구하는 순서
+- 1단계: 데이터 전체의 평균을 구합니다.
+- 2단계: 각 데이터 값에서 평균을 뺀 편차$$(\(x_i - \text{평균}\))$$를 구합니다.
+- 3단계: 각 편차를 제곱합니다.
+- 4단계: 편차 제곱의 합을 구한 뒤, 개수(N 또는 n-1)로 나누어 분산을 구합니다.
+- 5단계: 분산 값에 제곱근(루트)을 씌워 표준 편차를 완성합니다.
+- 구체적으로 풀어야 할 데이터 값들이 있으신가요? 숫자를 알려주시면 평균부터 표준 편차까지 직접 계산하는 과정을 도와드릴 수 있습니다.
+- https://ko.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/variance-standard-deviation-population/a/calculating-standard-deviation-step-by-step
+
 Absolutely. This is a good example because it combines **C variadic functions (`...`)**, `va_list`, `va_arg`, and the **population standard deviation formula**.
 
 The program prints approximately:
