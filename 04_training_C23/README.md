@@ -52,14 +52,13 @@ $ /opt/gcc-15/bin/gcc -std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -We
 ```
 
 
-# (유료 책) Jens Gustedt
-Modern C, Third Edition: Covers the C23 standard
+# (유료 책) Jens Gustedt | Modern C, Third Edition: Covers the C23 standard
 - https://www.amazon.com/Modern-Third-Covers-C23-standard-ebook/dp/B0FP5LXVCK/
 - 레딧을 통해 알게 됨
   - https://www.reddit.com/r/cprogramming/comments/1ncgn8d/modern_c_third_edition_practical_guide_to_writing/?solution=079085122da35749079085122da35749&js_challenge=1&token=7afd7253fec22262ff1c52b1703fe9ec3eb0157bb91e74d8f12d235da611afdf&jsc_orig_r=
 
 - manning에서 직접 구매가 더 싸다
-https://www.manning.com/books/modern-c-third-edition?utm_campaign=21635480-book_gustedt2&utm_source=reddit&utm_medium=social
+  - https://www.manning.com/books/modern-c-third-edition?utm_campaign=21635480-book_gustedt2&utm_source=reddit&utm_medium=social
 
 
 # C23
