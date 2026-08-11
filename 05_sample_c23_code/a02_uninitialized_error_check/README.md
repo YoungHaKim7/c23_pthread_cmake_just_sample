@@ -113,6 +113,35 @@ gmake[1]: *** [CMakeFiles/Makefile2:87: CMakeFiles/a03_uninitialized_error_part2
 gmake: *** [Makefile:91: all] Error 2
 ```
 
+### fishshell에서 multi line으로 입력해서 눈에 보기 좋게 입력
+
+```bash
+$ cmake -S . \
+              -B target \
+              -D CMAKE_BUILD_TYPE=Debug \
+              -D CMAKE_C_COMPILER=/usr/bin/clang \
+              && cmake --build target
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/target
+[ 50%] Building C object CMakeFiles/a03_uninitialized_error_part2.dir/src/main.c.o
+clang: warning: -lm: 'linker' input unused [-Wunused-command-line-argument]
+warning: unknown warning option '-Werror=maybe-uninitialized'; did you mean '-Werror=uninitialized'? [-Wunknown-warning-option]
+/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:25:32: error:
+      use of undeclared identifier 'tmp'
+   25 |     printf("the temp is %u\n", tmp);
+      |                                ^~~
+/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:4:26: warning:
+      unused parameter 'argv' [-Wunused-parameter]
+    4 | int main(int argc, char *argv[argc + 1]) {
+      |                          ^
+2 warnings and 1 error generated.
+gmake[2]: *** [CMakeFiles/a03_uninitialized_error_part2.dir/build.make:79: CMakeFiles/a03_uninitialized_error_part2.dir/src/main.c.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:87: CMakeFiles/a03_uninitialized_error_part2.dir/all] Error 2
+gmake: *** [Makefile:91: all] Error 2
+```
+
+
 - `tmp` is declared without an initializer and only assigned in *some* `switch`
   cases (`case 0`, `case 1`). There is no `default`, so when the selector matches
   no case the variable is left indeterminate, yet it is read by `printf` afterward.
