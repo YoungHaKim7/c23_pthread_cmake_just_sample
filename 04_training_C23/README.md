@@ -1,5 +1,7 @@
 # link
 
+- [(외부링크) 최신gcc & clang 설치하는 방법](https://github.com/YoungHaKim7/cpp23_26_project#gcc%EC%B5%9C%EC%8B%A0%EC%A0%95%EB%B3%B4-%EB%B0%8F-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-%EB%B0%9B%EA%B8%B0)
+
 - P99 is a suite of macro and function definitions that ease the programming in C99, aka C 1999. By using new tools from C99 we implement default arguments for functions, scope bound resource management, transparent allocation and initialization, ...
   - https://gitlab.inria.fr/gustedt/p99
 
@@ -8,6 +10,7 @@
 - C23 snippets
   - code examples of some of the new features added in C23
     - https://github.com/skig/c23_snippets
+
 
 <hr />
 
