@@ -13,40 +13,41 @@ clang_format_basic := `which clang-format`
 cmake := `which cmake`
 
 # compiler settings
+# Find best clang version (21+) on Linux, fallback to system clang
 clang_which := if os == "Linux" { \
-  "/usr/bin/clang-21" \
+    clang \
   } else if os == "Darwin" { \
     "/opt/homebrew/opt/llvm/bin/clang" \
   } else { \
     clang \
   }
 clangpp_which := if os == "Linux" { \
-  "/usr/bin/clang++-21" \
+    clangpp \
   } else if os == "Darwin" { \
     "/opt/homebrew/opt/llvm/bin/clang++" \
   } else { \
     clangpp \
   }
 gcc_which := if os == "Linux" { \
-    "/opt/gcc-15/bin/gcc" \
+	gcc
   } else if os == "Darwin" { \
-    "/opt/homebrew/opt/gcc@15/bin/gcc-15" \
+    `sh -c 'if [ -x "/opt/homebrew/opt/gcc@15/bin/gcc-15" ]; then echo "/opt/homebrew/opt/gcc@15/bin/gcc-15"; exit 0; fi; for v in {14..30}; do if [ -x "/opt/homebrew/opt/llvm@$v/bin/clang" ]; then echo "/opt/homebrew/opt/llvm@$v/bin/clang"; exit 0; fi; done; echo "/opt/homebrew/opt/llvm/bin/clang"'` \
   } else { \
     gcc \
   }
 
 # cmake settings(4.0)
 cmake_which := if os == "Linux" { \
-    "/usr/local/bin/cmake" \
+    cmake \
   } else if os == "Darwin" { \
     "/opt/homebrew/bin/cmake"
   } else { \
     cmake \
   }
 
-# clang-format 21
+# clang-format - find best version (21+) on Linux
 clang_format := if os == "Linux" { \
-    "clang-format-21" \
+    clang_format_basic \
   } else if os == "Darwin" { \
     "/opt/homebrew/opt/llvm/bin/clang-format" \
   } else { \
@@ -85,8 +86,8 @@ fm_flags := "-e c \
   " -style=file -i {} \\;"
 
 # Source and target directories
-src_dir := "./src"
-target_dir := "./target"
+src_dir := "src"
+target_dir := "target"
 
 # Files
 source := src_dir+"/main.c"
@@ -113,56 +114,60 @@ r:
 	just fm
 	rm -rf {{target_dir}}
 	mkdir -p {{target_dir}}
-	{{gcc_which}} {{ldflags_common}} -o {{target_dir}}/{{project_name}} {{source}}
+	{{clang}} {{ldflags_common}} -o ./{{target_dir}}/{{project_name}} {{source}}
 	{{target}}
 
 # (C)clang compile(Optimization/LinuxOS/ macOS)
 ro:
 	rm -rf {{target_dir}}
 	mkdir -p {{target_dir}}
-	{{clang_which}} {{ldflags_optimize}} -o {{target_dir}}/{{project_name}} {{source}}
+	{{clang_which}} {{ldflags_optimize}} -o ./{{target_dir}}/{{project_name}} {{source}}
 	{{target}}
 
 # cmake compile(LinuxOS)
 cr:
 	just fm
-	rm -rf build
-	mkdir -p build
-	export CC={{gcc_which}}
-	cmake -D CMAKE_C_COMPILER={{gcc_which}} -G Ninja .
+	rm -rf {{target_dir}}
+	mkdir -p {{target_dir}}
+	export CC={{clang}}
+	cmake -D CMAKE_BUILD_TYPE=Debug \
+	      -D CMAKE_C_COMPILER={{clang}} \
+	      -G Ninja .
 	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/{{target}}
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake .ninja_deps .ninja_log debug {{target_dir}}
+	./{{target_dir}}/debug/{{project_name}}
 
 # cmake compile(LinuxOS)
 cro:
-	rm -rf build
-	mkdir -p build
+	just fm
+	rm -rf {{target_dir}}
+	mkdir -p {{target_dir}}
 	cmake -D CMAKE_BUILD_TYPE=RelWithDebInfo \
-	      -D CMAKE_C_COMPILER={{gcc_which}} \
+	      -D CMAKE_C_COMPILER={{clang}} \
 	      -D CMAKE_C_FLAGS_RELWITHDEBINFO_INIT="-O2 -g" \
 	      -G Ninja .
 	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/{{target}}
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake .ninja_deps .ninja_log relwithdebinfo {{target_dir}}
+	./{{target_dir}}/relwithdebinfo/{{project_name}}
 
 # cmake compile(LinuxOS)
 cro3:
-	rm -rf build
-	mkdir -p build
+	just fm
+	rm -rf {{target_dir}}
+	mkdir -p {{target_dir}}
 	cmake -D CMAKE_BUILD_TYPE=Release \
-	      -D CMAKE_C_COMPILER={{gcc_which}} \
+	      -D CMAKE_C_COMPILER={{clang}} \
 	      -D CMAKE_C_FLAGS_RELEASE_INIT="-O3 -DNDEBUG" \
 	      -G Ninja .
 	ninja
-	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-	./build/{{target}}
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake .ninja_deps .ninja_log release {{target_dir}}
+	./{{target_dir}}/release/{{project_name}}
 
 # zig C compile(LinuxOS)
 zr:
 	rm -rf {{target_dir}}
 	mkdir -p {{target_dir}}
-	export CC={{gcc_which}}
+	export CC={{clang}}
 	zig cc {{ldflags_common}} -o {{target}} {{source}}
 	{{target}}
 	
@@ -170,7 +175,7 @@ zr:
 ctest:
 	rm -rf build
 	mkdir -p build
-	cmake -D CMAKE_C_COMPILER={{gcc_which}} \
+	cmake -D CMAKE_C_COMPILER={{clang}} \
 		  -S . -B build
 	cmake --build build
 	ctest --test-dir ./build
@@ -183,13 +188,13 @@ b:
 
 # clangd .cache(c23 LSP build)
 clangd:
-	rm -rf .cache
+	rm -rf .cache {{target_dir}} build
 	{{cmake_which}} -DCMAKE_BUILD_TYPE:STRING=Debug \
 					-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
 					-DCMAKE_C_COMPILER:FILEPATH={{clang_which}} \
-					-DCMAKE_CXX_COMPILER:FILEPATH={{clangpp_which}} --no-warn-unused-cli \
+					-DCMAKE_CXX_COMPILER:FILEPATH={{clangpp_which}} -Wno-unused-cli \
 					-S {{full_project_name}} \
-					-B {{full_project_name}}/build \
+					-B {{full_project_name}}/target \
 					-G Ninja
 
 # move target
@@ -362,7 +367,7 @@ init:
 	echo '# BasedOnStyle: WebKit' > .clang-format
 	echo '# LLVM, Google, Chromium, Mozilla, WebKit' >> .clang-format
 	echo "" >> .clang-format
-	echo 'BasedOnStyle: WebKit' >> .clang-format
+	echo 'BasedOnStyle: LLVM' >> .clang-format
 	echo 'IndentWidth: 4' >> .clang-format
 	echo 'ContinuationIndentWidth: 4' >> .clang-format
 	echo 'IndentCaseLabels: false' >> .clang-format
@@ -371,6 +376,11 @@ init:
 	echo 'IndentPPDirectives: None' >> .clang-format
 	echo 'IndentExternBlock: NoIndent' >> .clang-format
 	echo 'cmake_minimum_required(VERSION 4.0)' >> CMakeLists.txt
+	echo '' >> CMakeLists.txt
+	echo 'set(CMAKE_C_STANDARD 23)' >> CMakeLists.txt
+	echo 'set(CMAKE_C_STANDARD_REQUIRED ON)' >> CMakeLists.txt
+	echo 'set(CMAKE_C_EXTENSIONS OFF)' >> CMakeLists.txt
+	echo '# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)' >> CMakeLists.txt
 	echo '' >> CMakeLists.txt
 	echo 'get_filename_component(ProjectId ${CMAKE_CURRENT_SOURCE_DIR} NAME)' >> CMakeLists.txt
 	echo 'string(REPLACE " " "_" ProjectId ${ProjectId})' >> CMakeLists.txt
@@ -385,10 +395,6 @@ init:
 	echo '# Force Clang 21(macOS)' >> CMakeLists.txt
 	echo '# set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang")' >> CMakeLists.txt
 	echo '' >> CMakeLists.txt
-	echo 'set(CMAKE_C_STANDARD 23)' >> CMakeLists.txt
-	echo 'set(CMAKE_C_STANDARD_REQUIRED ON)' >> CMakeLists.txt
-	echo 'set(CMAKE_C_EXTENSIONS OFF)' >> CMakeLists.txt
-	echo '# set(CMAKE_EXPORT_COMPILE_COMMANDS ON)' >> CMakeLists.txt
 	echo 'SET (CMAKE_C_FLAGS_INIT                "-Wall -std=c23")' >> CMakeLists.txt
 	echo 'SET (CMAKE_C_FLAGS_DEBUG_INIT          "-g")' >> CMakeLists.txt
 	echo 'SET (CMAKE_C_FLAGS_MINSIZEREL_INIT     "-Os -DNDEBUG")' >> CMakeLists.txt
@@ -423,7 +429,8 @@ init:
 	echo '' >> CMakeLists.txt
 	echo '# Output directory' >> CMakeLists.txt
 	echo 'set_target_properties(${ProjectId} PROPERTIES' >> CMakeLists.txt
-	echo '    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/target' >> CMakeLists.txt
+	echo '    RUNTIME_OUTPUT_DIRECTORY' >> CMakeLists.txt
+	echo '       "${CMAKE_BINARY_DIR}/$<LOWER_CASE:$<CONFIG>>"' >> CMakeLists.txt
 	echo ')' >> CMakeLists.txt
 
 # C init(int main(int argc, char* argv[]))
@@ -454,6 +461,7 @@ init2:
 
 # Debugging(VSCode codelldb ver)
 codelldb:
+	just cr
 	rm -rf .vscode
 	mkdir -p .vscode
 	echo '{' > .vscode/launch.json
@@ -463,7 +471,7 @@ codelldb:
 	echo '            "type": "lldb",' >> .vscode/launch.json
 	echo '            "request": "launch",' >> .vscode/launch.json
 	echo '            "name": "Launch",' >> .vscode/launch.json
-	echo '            "program": "${workspaceFolder}/build/target/${workspaceFolderBasename}",' >> .vscode/launch.json
+	echo '            "program": "${workspaceFolder}/target/debug/${fileWorkspaceFolderBasename}",' >> .vscode/launch.json
 	echo '            "args": [],' >> .vscode/launch.json
 	echo '            "cwd": "${workspaceFolder}"' >> .vscode/launch.json
 	echo '            // "preLaunchTask": "C/C++: clang build active file"' >> .vscode/launch.json
@@ -472,7 +480,7 @@ codelldb:
 	echo '            "name": "gcc - Build and debug active file",' >> .vscode/launch.json
 	echo '            "type": "lldb",' >> .vscode/launch.json
 	echo '            "request": "launch",' >> .vscode/launch.json
-	echo '            "program": "${fileDirname}/build/target/${workspaceFolderBasename}",' >> .vscode/launch.json
+	echo '            "program": "${fileDirname}/target/debug/${fileWorkspaceFolderBasename}",' >> .vscode/launch.json
 	echo '            "args": [],' >> .vscode/launch.json
 	echo '            "stopAtEntry": false,' >> .vscode/launch.json
 	echo '            "cwd": "${fileDirname}",' >> .vscode/launch.json
@@ -496,7 +504,7 @@ codelldb:
 	echo '                "-g",' >> .vscode/tasks.json
 	echo '                "${file}",' >> .vscode/tasks.json
 	echo '                "-o",' >> .vscode/tasks.json
-	echo '                "${fileDirname}/build/target/${workspaceFolderBasename}"' >> .vscode/tasks.json
+	echo '                "${fileDirname}/target/debug/${fileWorkspaceFolderBasename}"' >> .vscode/tasks.json
 	echo '            ],' >> .vscode/tasks.json
 	echo '            "options": {' >> .vscode/tasks.json
 	echo '                "cwd": "${fileDirname}"' >> .vscode/tasks.json
@@ -516,6 +524,7 @@ codelldb:
 
 # Debugging(VSCode)
 vscode:
+	just cr
 	rm -rf .vscode
 	mkdir -p .vscode
 	echo '{' > .vscode/launch.json
@@ -525,7 +534,7 @@ vscode:
 	echo '            "type": "lldb",' >> .vscode/launch.json
 	echo '            "request": "launch",' >> .vscode/launch.json
 	echo '            "name": "Launch",' >> .vscode/launch.json
-	echo '            "program": "${workspaceFolder}/target/${fileBasenameNoExtension}",' >> .vscode/launch.json
+	echo '            "program": "${workspaceFolder}/target/debug/${fileWorkspaceFolderBasename}",' >> .vscode/launch.json
 	echo '            "args": [],' >> .vscode/launch.json
 	echo '            "cwd": "${workspaceFolder}"' >> .vscode/launch.json
 	echo '            // "preLaunchTask": "C/C++: clang build active file"' >> .vscode/launch.json
@@ -534,7 +543,7 @@ vscode:
 	echo '            "name": "gcc - Build and debug active file",' >> .vscode/launch.json
 	echo '            "type": "cppdbg",' >> .vscode/launch.json
 	echo '            "request": "launch",' >> .vscode/launch.json
-	echo '            "program": "${fileDirname}/target/${fileBasenameNoExtension}",' >> .vscode/launch.json
+	echo '            "program": "${fileDirname}/target/debug/${fileWorkspaceFolderBasename}",' >> .vscode/launch.json
 	echo '            "args": [],' >> .vscode/launch.json
 	echo '            "stopAtEntry": false,' >> .vscode/launch.json
 	echo '            "cwd": "${fileDirname}",' >> .vscode/launch.json
@@ -558,7 +567,7 @@ vscode:
 	echo '                "-g",' >> .vscode/tasks.json
 	echo '                "${file}",' >> .vscode/tasks.json
 	echo '                "-o",' >> .vscode/tasks.json
-	echo '                "${fileDirname}/target/${fileBasenameNoExtension}"' >> .vscode/tasks.json
+	echo '                "${fileDirname}/target/debug/${fileBasenameNoExtension}"' >> .vscode/tasks.json
 	echo '            ],' >> .vscode/tasks.json
 	echo '            "options": {' >> .vscode/tasks.json
 	echo '                "cwd": "${fileDirname}"' >> .vscode/tasks.json
