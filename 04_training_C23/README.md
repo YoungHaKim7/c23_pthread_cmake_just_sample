@@ -44,12 +44,12 @@ InstalledDir: /usr/lib/llvm-21/bin
 - 최대한 꼼꼼히 체크하고 싶다면 뒤에 옵션 다 넣어주세요.
 
 ```bash
+# 옵션을 최대한 많이 넣을수록 꼼꼼히 체크해준다.
 $ /opt/gcc-15/bin/gcc -std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror ./src/main.c
 
+# 초간단 버젼
+/opt/gcc-15/bin/gcc -std=c23 ./src/main.c
 ```
-
-
-~
 
 
 # (유료 책) Jens Gustedt
