@@ -1,0 +1,99 @@
+# test version check
+
+```bash
+$ clang --version
+clang version 22.1.8
+Target: x86_64-suse-linux
+Thread model: posix
+InstalledDir: /usr/bin
+
+$ gcc --version
+gcc (SUSE Linux) 16.1.1 20260731
+Copyright (C) 2026 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+```
+
+# `gcc` or `clang`
+
+```bash
+  
+# 이거 에러를 못잡네
+ /usr/bin/clang -std=c23 -Wall -Wextra -pedantic -Werror -O1 -ggdb -o ./target/a02_uninitialized_error_check src/main.c
+
+# 이게 최고네
+$ /usr/bin/clang --analyze -std=c23 -Xanalyzer -analyzer-output=text src/main.c
+
+src/main.c:24:5: warning: 2nd function call argument is an uninitialized
+      value [core.CallAndMessage]
+   24 |     printf("the temp is %u\n", tmp);
+      |     ^                          ~~~
+src/main.c:8:5: note: 'tmp' declared without an initial value
+    8 |     unsigned tmp;
+      |     ^~~~~~~~~~~~
+src/main.c:12:5: note: 'Default' branch taken. Execution continues on line
+      24
+   12 |     switch ((unsigned)argc) {
+      |     ^
+src/main.c:24:5: note: 2nd function call argument is an uninitialized value
+   24 |     printf("the temp is %u\n", tmp);
+      |     ^                          ~~~
+1 warning generated.
+
+$ gcc -Wmaybe-uninitialized -std=c23 -Wall -Wextra -pedantic -Werror -O1 -ggdb -o ./target/a02_uninitialized_error_check src/main.c
+src/main.c: In function ‘main’:
+src/main.c:24:5: error: ‘tmp’ may be used uninitialized [-Werror=maybe-uninitialized]
+   24 |     printf("the temp is %u\n", tmp);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/main.c:8:14: note: ‘tmp’ was declared here
+    8 |     unsigned tmp;
+      |              ^~~
+cc1: all warnings being treated as errors
+
+# gcc 는 버젼 16이상 되야하는듯
+❯ gcc -std=c23 -Wmaybe-uninitialized -Wall -Wextra -pedantic -Werror -O1 -ggdb -o ./target/a02_uninitialized_error_check src/main.c
+src/main.c: In function ‘main’:
+src/main.c:24:5: error: ‘tmp’ may be used uninitialized [-Werror=maybe-uninitialized]
+   24 |     printf("the temp is %u\n", tmp);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/main.c:8:14: note: ‘tmp’ was declared here
+    8 |     unsigned tmp;
+      |              ^~~
+cc1: all warnings being treated as errors
+```
+
+
+# Result
+
+This example is **deliberately broken**: it demonstrates a `switch` that
+fails to assign a value on every path, so the compiler rejects it.
+
+```bash
+$ cmake -S . -B target && cmake --build target
+
+.../src/main.c: In function ‘main’:
+.../src/main.c:23:5: error: ‘tmp’ may be used uninitialized [-Werror=maybe-uninitialized]
+   23 |     printf("the temp is %u\n", tmp);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.../src/main.c:7:14: note: ‘tmp’ was declared here
+    7 |     unsigned tmp;
+      |              ^~~
+cc1: some warnings being treated as errors
+gmake: *** [Makefile:91: all] Error 2
+```
+
+- `tmp` is declared without an initializer and only assigned in *some* `switch`
+  cases (`case 0`, `case 1`). There is no `default`, so when the selector matches
+  no case the variable is left indeterminate, yet it is read by `printf` afterward.
+  - `tmp`는 초기화 없이 선언되고 *일부* `switch` 케이스(`case 0`, `case 1`)에서만
+    값을 대입받습니다. `default`가 없으므로 선택자가 어떤 케이스와도 맞지 않으면
+    변수가 미정 상태로 남는데, 그 직후 `printf`에서 이를 읽습니다.
+
+- Three knobs in `CMakeLists.txt` make the warning into a hard error:
+  1. `-Wall -Wextra` — enables `-Wmaybe-uninitialized`.
+  2. `-O1` — the *may be uninitialized* data-flow analysis only runs at `-O1` and above (at `-O0` it is silently skipped).
+  3. `-Werror=maybe-uninitialized` — promotes that specific warning to an error so the build fails.
+  - `CMakeLists.txt`의 세 설정이 이 경고를 컴파일 에러로 바꿉니다:
+    1. `-Wall -Wextra` — `-Wmaybe-uninitialized`를 켭니다.
+    2. `-O1` — *초기화되지 않았을 수 있음* 데이터 흐름 분석은 `-O1` 이상에서만 동작합니다(`-O0`에서는 생략됨).
+    3. `-Werror=maybe-uninitialized` — 해당 경고를 에러로 격상시켜 빌드를 실패시킵니다.
