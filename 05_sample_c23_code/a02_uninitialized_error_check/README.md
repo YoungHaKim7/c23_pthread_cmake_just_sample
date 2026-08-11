@@ -44,18 +44,8 @@ src/main.c:24:5: note: 2nd function call argument is an uninitialized value
 - `gcc`
 
 ```bash
-$ gcc -Wmaybe-uninitialized -std=c23 -Wall -Wextra -pedantic -Werror -O1 -ggdb -o ./target/a02_uninitialized_error_check src/main.c
-src/main.c: In function ‘main’:
-src/main.c:24:5: error: ‘tmp’ may be used uninitialized [-Werror=maybe-uninitialized]
-   24 |     printf("the temp is %u\n", tmp);
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src/main.c:8:14: note: ‘tmp’ was declared here
-    8 |     unsigned tmp;
-      |              ^~~
-cc1: all warnings being treated as errors
-
 # gcc 는 버젼 16이상 되야하는듯
-❯ gcc -std=c23 -Wmaybe-uninitialized -Wall -Wextra -pedantic -Werror -O1 -ggdb -o ./target/a02_uninitialized_error_check src/main.c
+$ gcc -std=c23 -Wmaybe-uninitialized -Wall -Wextra -pedantic -Werror -O1 -ggdb -o ./target/a02_uninitialized_error_check src/main.c
 src/main.c: In function ‘main’:
 src/main.c:24:5: error: ‘tmp’ may be used uninitialized [-Werror=maybe-uninitialized]
    24 |     printf("the temp is %u\n", tmp);
