@@ -113,7 +113,7 @@ gmake[1]: *** [CMakeFiles/Makefile2:87: CMakeFiles/a03_uninitialized_error_part2
 gmake: *** [Makefile:91: all] Error 2
 ```
 
-### fishshell에서 multi line으로 입력해서 눈에 보기 좋게 입력(`clang` 으로 컴파일러 강제 세)
+### fishshell에서 multi line으로 입력해서 눈에 보기 좋게 입력(`clang` 으로 컴파일러 강제 세팅)
 
 ```bash
 $ cmake -S . \
