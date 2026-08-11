@@ -62,17 +62,33 @@ cc1: all warnings being treated as errors
 This example is **deliberately broken**: it demonstrates a `switch` that
 fails to assign a value on every path, so the compiler rejects it.
 
-```bash
-$ cmake -S . -B target && cmake --build target
+- 기본 컴파일러가 `gcc`로 되어 있는 상태
 
-.../src/main.c: In function ‘main’:
-.../src/main.c:23:5: error: ‘tmp’ may be used uninitialized [-Werror=maybe-uninitialized]
-   23 |     printf("the temp is %u\n", tmp);
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.../src/main.c:7:14: note: ‘tmp’ was declared here
-    7 |     unsigned tmp;
-      |              ^~~
-cc1: some warnings being treated as errors
+```bash
+$  cmake -S . -B target && cmake --build target
+-- The C compiler identification is GNU 16.1.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/target
+[ 50%] Building C object CMakeFiles/a03_uninitialized_error_part2.dir/src/main.c.o
+/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c: In function ‘main’:
+/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:25:32: error: ‘tmp’ undeclared (first use in this function)
+   25 |     printf("the temp is %u\n", tmp);
+      |                                ^~~
+/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:25:32: note: each undeclared identifier is reported only once for each function it appears in
+/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:4:26: warning: unused parameter ‘argv’ [-Wunused-parameter]
+    4 | int main(int argc, char *argv[argc + 1]) {
+      |                    ~~~~~~^~~~~~~~~~~~~~
+/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:13:18: warning: statement will never be executed [-Wswitch-unreachable]
+   13 |         unsigned tmp = 45;
+      |                  ^~~
+gmake[2]: *** [CMakeFiles/a03_uninitialized_error_part2.dir/build.make:79: CMakeFiles/a03_uninitialized_error_part2.dir/src/main.c.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:87: CMakeFiles/a03_uninitialized_error_part2.dir/all] Error 2
 gmake: *** [Makefile:91: all] Error 2
 ```
 
