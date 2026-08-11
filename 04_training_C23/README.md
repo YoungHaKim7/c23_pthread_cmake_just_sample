@@ -11,6 +11,44 @@
 
 <hr />
 
+# C23돌리기 위한 컴파일러 버젼
+
+```
+# 15버젼이상
+gcc
+
+# 20버젼이상(추천은 22버젼 추천드림)
+clang
+
+
+$ /opt/gcc-15/bin/gcc --version
+gcc (GCC) 15.1.0
+Copyright (C) 2025 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+
+$ clang --version
+Ubuntu clang version 21.1.8 (++20251221032922+2078da43e25a-1~exp1~20251221153059.70)
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /usr/lib/llvm-21/bin
+```
+
+## 기본 컴파일 패턴 `-std=c23` 이건 꼭 넣어줘야함. 뒤에 옵션은 안 넣어도 돌아가긴함.
+
+- 최대한 꼼꼼히 체크하고 싶다면 뒤에 옵션 다 넣어주세요.
+
+```bash
+$ /opt/gcc-15/bin/gcc -std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror ./src/main.c
+
+```
+
+
+~
+
+
 # (유료 책) Jens Gustedt
 Modern C, Third Edition: Covers the C23 standard
 - https://www.amazon.com/Modern-Third-Covers-C23-standard-ebook/dp/B0FP5LXVCK/
