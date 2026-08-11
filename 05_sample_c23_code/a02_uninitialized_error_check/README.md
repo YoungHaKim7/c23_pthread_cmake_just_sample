@@ -74,17 +74,17 @@ $  cmake -S . -B target && cmake --build target
 -- Detecting C compile features - done
 -- Configuring done (0.2s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/target
+-- Build files have been written to: ./a03_uninitialized_error_part2/target
 [ 50%] Building C object CMakeFiles/a03_uninitialized_error_part2.dir/src/main.c.o
-/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c: In function ‘main’:
-/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:25:32: error: ‘tmp’ undeclared (first use in this function)
+./a03_uninitialized_error_part2/src/main.c: In function ‘main’:
+./a03_uninitialized_error_part2/src/main.c:25:32: error: ‘tmp’ undeclared (first use in this function)
    25 |     printf("the temp is %u\n", tmp);
       |                                ^~~
-/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:25:32: note: each undeclared identifier is reported only once for each function it appears in
-/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:4:26: warning: unused parameter ‘argv’ [-Wunused-parameter]
+./a03_uninitialized_error_part2/src/main.c:25:32: note: each undeclared identifier is reported only once for each function it appears in
+./a03_uninitialized_error_part2/src/main.c:4:26: warning: unused parameter ‘argv’ [-Wunused-parameter]
     4 | int main(int argc, char *argv[argc + 1]) {
       |                    ~~~~~~^~~~~~~~~~~~~~
-/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:13:18: warning: statement will never be executed [-Wswitch-unreachable]
+./a03_uninitialized_error_part2/src/main.c:13:18: warning: statement will never be executed [-Wswitch-unreachable]
    13 |         unsigned tmp = 45;
       |                  ^~~
 gmake[2]: *** [CMakeFiles/a03_uninitialized_error_part2.dir/build.make:79: CMakeFiles/a03_uninitialized_error_part2.dir/src/main.c.o] Error 1
@@ -105,15 +105,15 @@ $ cmake -S . -B target -D CMAKE_BUILD_TYPE=Debug -D CMAKE_C_COMPILER=/usr/bin/cl
 -- Detecting C compile features - done
 -- Configuring done (0.2s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/target
+-- Build files have been written to: ./a03_uninitialized_error_part2/target
 [ 50%] Building C object CMakeFiles/a03_uninitialized_error_part2.dir/src/main.c.o
 clang: warning: -lm: 'linker' input unused [-Wunused-command-line-argument]
 warning: unknown warning option '-Werror=maybe-uninitialized'; did you mean '-Werror=uninitialized'? [-Wunknown-warning-option]
-/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:25:32: error:
+./a03_uninitialized_error_part2/src/main.c:25:32: error:
       use of undeclared identifier 'tmp'
    25 |     printf("the temp is %u\n", tmp);
       |                                ^~~
-/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:4:26: warning:
+./a03_uninitialized_error_part2/src/main.c:4:26: warning:
       unused parameter 'argv' [-Wunused-parameter]
     4 | int main(int argc, char *argv[argc + 1]) {
       |                          ^
@@ -139,15 +139,15 @@ $ cmake -S . \
 -- Detecting C compile features - done
 -- Configuring done (0.2s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/target
+-- Build files have been written to: ./a03_uninitialized_error_part2/target
 [ 50%] Building C object CMakeFiles/a03_uninitialized_error_part2.dir/src/main.c.o
 clang: warning: -lm: 'linker' input unused [-Wunused-command-line-argument]
 warning: unknown warning option '-Werror=maybe-uninitialized'; did you mean '-Werror=uninitialized'? [-Wunknown-warning-option]
-/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:25:32: error:
+./a03_uninitialized_error_part2/src/main.c:25:32: error:
       use of undeclared identifier 'tmp'
    25 |     printf("the temp is %u\n", tmp);
       |                                ^~~
-/home/gy/my_projects/Rust_Lang/9999/rust-snippets_gyoung/0000_C_Cpp_Java_Kotlin_Assembly_Lang/C_Lang/9998_Modern_C23_Jens_Gustedt/0000_sample_c23_code/a03_uninitialized_error_part2/src/main.c:4:26: warning:
+./a03_uninitialized_error_part2/src/main.c:4:26: warning:
       unused parameter 'argv' [-Wunused-parameter]
     4 | int main(int argc, char *argv[argc + 1]) {
       |                          ^
