@@ -32,10 +32,14 @@ SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT "-O2 -g")
 
 # Common compile flags
 add_compile_options(
-    --analyze 
-    -Xanalyzer 
-    -analyzer-output=text
     # -std=c23
+    -Wmaybe-uninitialized 
+    -Wall 
+    -Wextra 
+    -pedantic 
+    -Werror 
+    -O1 
+    -ggdb
 )
 
 # Main executable with C sources

@@ -65,7 +65,7 @@ fails to assign a value on every path, so the compiler rejects it.
 - 기본 컴파일러가 `gcc`로 되어 있는 상태
 
 ```bash
-$  cmake -S . -B target && cmake --build target
+$ cmake -S . -B target && cmake --build target
 -- The C compiler identification is GNU 16.1.1
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
@@ -126,35 +126,34 @@ gmake: *** [Makefile:91: all] Error 2
 ### fishshell에서 multi line으로 입력해서 눈에 보기 좋게 입력(`clang` 으로 컴파일러 강제 세팅)
 
 ```bash
-$ cmake -S . \
+ cmake -S . \
         -B target \
         -D CMAKE_BUILD_TYPE=Debug \
         -D CMAKE_C_COMPILER=/usr/bin/clang \
         && cmake --build target
--- The C compiler identification is Clang 22.1.8
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/clang - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.2s)
+-- Configuring done (0.0s)
 -- Generating done (0.0s)
--- Build files have been written to: ./a03_uninitialized_error_part2/target
-[ 50%] Building C object CMakeFiles/a03_uninitialized_error_part2.dir/src/main.c.o
-clang: warning: -lm: 'linker' input unused [-Wunused-command-line-argument]
-warning: unknown warning option '-Werror=maybe-uninitialized'; did you mean '-Werror=uninitialized'? [-Wunknown-warning-option]
-./a03_uninitialized_error_part2/src/main.c:25:32: error:
-      use of undeclared identifier 'tmp'
-   25 |     printf("the temp is %u\n", tmp);
-      |                                ^~~
-./a03_uninitialized_error_part2/src/main.c:4:26: warning:
-      unused parameter 'argv' [-Wunused-parameter]
-    4 | int main(int argc, char *argv[argc + 1]) {
-      |                          ^
-2 warnings and 1 error generated.
-gmake[2]: *** [CMakeFiles/a03_uninitialized_error_part2.dir/build.make:79: CMakeFiles/a03_uninitialized_error_part2.dir/src/main.c.o] Error 1
-gmake[1]: *** [CMakeFiles/Makefile2:87: CMakeFiles/a03_uninitialized_error_part2.dir/all] Error 2
-gmake: *** [Makefile:91: all] Error 2
+-- Build files have been written to: /home/y/my_project/C_Lang/c23_pthread_cmake_just_sample/05_sample_c23_code/a02_uninitialized_error_check/target
+[ 50%] Building C object CMakeFiles/a02_uninitialized_error_check.dir/src/main.c.o
+clang: warning: argument unused during compilation: '-c' [-Wunused-command-line-argument]
+/home/y/my_project/C_Lang/c23_pthread_cmake_just_sample/05_sample_c23_code/a02_uninitialized_error_check/src/main.c:24:5: warning:
+      2nd function call argument is an uninitialized value [core.CallAndMessage]
+   24 |     printf("the temp is %u\n", tmp);
+      |     ^                          ~~~
+/home/y/my_project/C_Lang/c23_pthread_cmake_just_sample/05_sample_c23_code/a02_uninitialized_error_check/src/main.c:8:5: note:
+      'tmp' declared without an initial value
+    8 |     unsigned tmp;
+      |     ^~~~~~~~~~~~
+/home/y/my_project/C_Lang/c23_pthread_cmake_just_sample/05_sample_c23_code/a02_uninitialized_error_check/src/main.c:12:5: note:
+      'Default' branch taken. Execution continues on line 24
+   12 |     switch ((unsigned)argc) {
+      |     ^
+/home/y/my_project/C_Lang/c23_pthread_cmake_just_sample/05_sample_c23_code/a02_uninitialized_error_check/src/main.c:24:5: note:
+      2nd function call argument is an uninitialized value
+   24 |     printf("the temp is %u\n", tmp);
+      |     ^                          ~~~
+1 warning generated.
+[100%] Built target a02_uninitialized_error_check
 ```
 
 
