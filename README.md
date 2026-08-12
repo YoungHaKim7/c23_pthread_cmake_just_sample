@@ -17,29 +17,36 @@
 - [justfile Documentation](https://just.systems/man/en/)
 
 ```bash
-$ /opt/gcc-15/bin/gcc --version
-gcc (GCC) 15.1.0
-Copyright (C) 2025 Free Software Foundation, Inc.
+# 260812
+$ gcc --version
+gcc (GCC) 16.2.0
+Copyright (C) 2026 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+$ which gcc
+/opt/gcc-16/bin/gcc
 
-$ /usr/bin/clang-20 --version
-Ubuntu clang version 20.1.8 (++20250804090239+87f0227cb601-1~exp1~20250804210352.139)
+$ clang-23 --version
+Ubuntu clang version 23.1.0 (++20260810063506+ea40e7f7724e-1~exp1~2026081006361
+2.42)
 Target: x86_64-pc-linux-gnu
 Thread model: posix
-InstalledDir: /usr/lib/llvm-20/bin
+InstalledDir: /usr/lib/llvm-23/bin
+
+$ which clang-23
+/usr/bin/clang-23
+
+$ clang-format-23 --version
+Ubuntu clang-format version 23.1.0 (++20260810063506+ea40e7f7724e-1~exp1~202608
+10063612.42)
 
 $ cmake --version
 cmake version 4.1.0
-
 CMake suite maintained and supported by Kitware (kitware.com/cmake).
 
 $ just --version
 just 1.42.4
-
-$ clang-format-20 --version
-Ubuntu clang-format version 20.1.8 (++20250804090239+87f0227cb601-1~exp1~20250804210352.139)
 ```
 
 <hr />
