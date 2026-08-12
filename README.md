@@ -44,6 +44,16 @@ Ubuntu clang-format version 20.1.8 (++20250804090239+87f0227cb601-1~exp1~2025080
 
 <hr />
 
+# gcc-16 공부할 실행파일들
+
+```bash
+/opt/gcc-16/bin�🔒
+$ eza
+c++  gcc     gcc-ranlib  gcov-tool                x86_64-pc-linux-gnu-g++         x86_64-pc-linux-gnu-gcc-ar
+cpp  gcc-ar  gcov        lto-dump                 x86_64-pc-linux-gnu-gcc         x86_64-pc-linux-gnu-gcc-nm
+g++  gcc-nm  gcov-dump   x86_64-pc-linux-gnu-c++  x86_64-pc-linux-gnu-gcc-16.2.0  x86_64-pc-linux-gnu-gcc-ranlib
+```
+
 # Cmake 정리중...
 - https://github.com/YoungHaKim7/cmake_training
 
