@@ -120,7 +120,7 @@ Trailing commas are now allowed in struct initializers, enum declarations, param
 **`_BitInt`**
 Arbitrary precision integer types. `_BitInt(N)` is an integer type with at least N bits.
 ```c
-_BitInt(128) big = 0;
+_BitInt(128) big = 0xFFFFFFFFFFFFFFFFULL * 0xFFFFFFFFFFFFFFFFULL;
 ```
 
 ### 4. Library Additions
