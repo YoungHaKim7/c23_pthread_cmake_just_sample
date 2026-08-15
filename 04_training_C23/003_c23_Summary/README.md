@@ -13,17 +13,19 @@ Here are the major new features and grammar changes:
 **`#embed` Directive**
 A new preprocessing directive to embed binary data directly into the object file at compile time.
 ```c
-const unsigned char logo[] = {
-    #embed "logo.png" as uint8_t
-};
+    // Embed the whole file as bytes
+    unsigned char logo[] = {
+#embed "logo.png"
+    };
+
 ```
 It replaces the need for external tools to convert binary files to C arrays.
 
 **`constexpr` and `consteval` concepts for expressions**
 * `constexpr` functions: Functions that can be evaluated at compile time if called with constant expressions. Similar to C++ `constexpr`.
 ```c
-constexpr int square(int x) { return x * x; }
-static_assert(square(5) == 25);
+constexpr int kAnswer = 42;
+static_assert(kAnswer == 42);
 ```
 * `consteval` functions: Functions that *must* be evaluated at compile time.
 
@@ -36,15 +38,16 @@ A null pointer constant `nullptr` is now a keyword, with type `nullptr_t`. It is
 **Digit separators**
 Underscores can be used in numeric literals for readability, like C++.
 ```c
-1_000_000
-0xFF_EC_12
-3.141_59
+int a = 1'000'000;
+int b = 0b1010'1100; // 172
+unsigned long long c = 0xFF'EC'12'34'56;
+double d = 0x1.ffffp+4; // hex floating
 ```
 
 **Binary literals**
 `0b` and `0B` prefixes for binary integers are now standard.
 ```c
-0b1010_1100
+0b1010'1100; // 172
 ```
 
 **Hexadecimal floating point**
@@ -55,8 +58,8 @@ Underscores can be used in numeric literals for readability, like C++.
 **`auto` type inference**
 `auto` can now be used as a storage class specifier for type deduction, like C++.
 ```c
-auto x = 42;          // int
-auto *p = &x;         // int*
+auto x = 42; // int
+auto p = &x; // int* — no '*' allowed: C23 auto infers from the initializer
 ```
 It does not support reference types.
 
@@ -69,8 +72,10 @@ typeof(x) y = x;
 **Attributes**
 The `[[attribute]]` syntax from C++ is now standard for C. Attributes are now a first-class part of the grammar.
 ```c
-[[nodiscard]] int get_value(void);
-[[deprecated("use foo2")]] void foo(void);
+[[nodiscard]] int get_value(void) { return 7; }
+
+[[deprecated("use new_api")]]
+void old_api(void) {}
 ```
 Standard attributes include `nodiscard`, `deprecated`, `fallthrough`, `maybe_unused`, `reproducible`, etc.
 
@@ -82,11 +87,32 @@ Designated initializers can now initialize flexible array members.
 **`#warning` directive**
 A standard way to emit a warning from source code.
 ```c
-#warning "This code is deprecated"
+// C23 preprocessor additions: #warning, #elifdef, #elifndef
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
+#warning "You are using C23"
+#endif
 ```
 
 **`static_assert` is now a keyword**
 `static_assert` was previously a macro in `<assert.h>`. It is now a built-in keyword.
+
+- Code ExamplesBefore C23 (C11 / C17)
+```c
+#include <assert.h> // Required for lowercase "static_assert" macro
+
+_Static_assert(sizeof(int) == 4, "Integers must be 4 bytes"); // Message required
+```
+
+- In C23
+```c
+// No #include <assert.h> required!
+
+// Two-argument syntax still works
+static_assert(sizeof(void*) == 8, "64-bit architecture required");
+
+// New single-argument syntax (cleaner)
+static_assert(sizeof(int) == 4); 
+```
 
 **Trailing commas in declarations and initializers**
 Trailing commas are now allowed in struct initializers, enum declarations, parameter type lists, and macro parameter lists. This makes diffs cleaner.
